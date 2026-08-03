@@ -1,0 +1,9 @@
+.js-alert {
+    opacity: 0;
+    transform: translateX(1rem);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.js-alert.is-open {
+    opacity: 1;
+    transform: translateX(0);
+}
