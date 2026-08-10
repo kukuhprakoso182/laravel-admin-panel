@@ -198,17 +198,25 @@ class DialogManager {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
             },
         })
-            .then((res) => {
-                if (!res.ok) window.alertError('Gagal menghapus data');
+            .then(async (res) => {
+                if (!res.ok) {
+                    const body = await res.json().catch(() => null);
+                    const message = body?.errors
+                        ? Object.values(body.errors).flat().join(' ')
+                        : (body?.message || 'Gagal menghapus data');
+                    window.alertError(message);
+                    return; // <-- STOP di sini, jangan lanjut ke onSuccess
+                }
 
                 if (typeof onSuccess === 'function') {
                     onSuccess();
-                    window.alertSuccess('Berhasil menghapus data');
                 } else if (redirectTo) {
                     window.location.href = redirectTo;
                 } else {
                     window.location.reload();
                 }
+
+                window.alertSuccess('Berhasil menghapus data');
             })
             .catch((err) => {
                 this.showBasicDialog('Error', err.message);

@@ -3,10 +3,13 @@
 namespace App\Services;
 
 use App\Repositories\Contracts\PermissionRepositoryInterface;
+use App\Services\Concerns\HandlesForeignKeyViolation;
 use Illuminate\Http\Request;
 
 class PermissionService
 {
+    use HandlesForeignKeyViolation;
+
     public function __construct(protected PermissionRepositoryInterface $permissionRepository) {}
 
     public function data(Request $request)
@@ -46,6 +49,9 @@ class PermissionService
 
     public function delete(int|string $id): bool
     {
-        return $this->permissionRepository->delete($id);
+        return $this->deleteOrFailOnForeignKey(
+            fn () => $this->permissionRepository->delete($id),
+            'permission_id'
+        );
     }
 }

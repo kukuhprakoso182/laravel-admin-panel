@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignUuid('user_id')
                 ->nullable()
                 ->constrained('users')
-                ->nullOnDelete();
+                ->restrictOnDelete();
 
             $table->string('event'); // login, logout, login_failed, created, updated, deleted
             $table->string('subject_type')->nullable(); // contoh: App\Models\User

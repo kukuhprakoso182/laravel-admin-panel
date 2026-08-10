@@ -3,11 +3,14 @@
 namespace App\Services;
 
 use App\Repositories\Contracts\RoleRepositoryInterface;
+use App\Services\Concerns\HandlesForeignKeyViolation;
 use App\Support\TableResponseFormatter;
 use Illuminate\Http\Request;
 
 class RoleService
 {
+    use HandlesForeignKeyViolation;
+
     public function __construct(protected RoleRepositoryInterface $roleRepository)
     {
     }
@@ -34,7 +37,10 @@ class RoleService
 
     public function delete(int|string $id): bool
     {
-        return $this->roleRepository->delete($id);
+        return $this->deleteOrFailOnForeignKey(
+            fn () => $this->roleRepository->delete($id),
+            'role_id'
+        );
     }
 
     public function assignMenuPermissions(int|string $roleId, array $menuPermissionPairs)

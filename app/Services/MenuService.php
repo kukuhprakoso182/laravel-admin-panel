@@ -3,11 +3,14 @@
 namespace App\Services;
 
 use App\Repositories\Contracts\MenuRepositoryInterface;
+use App\Services\Concerns\HandlesForeignKeyViolation;
 use App\Support\TableResponseFormatter;
 use Illuminate\Http\Request;
 
 class MenuService
 {
+    use HandlesForeignKeyViolation;
+
     public function __construct(protected MenuRepositoryInterface $menuRepository) {}
 
     public function list(int $perPage = 15)
@@ -34,7 +37,10 @@ class MenuService
 
     public function delete(int|string $id): bool
     {
-        return $this->menuRepository->delete($id);
+        return $this->deleteOrFailOnForeignKey(
+            fn () => $this->menuRepository->delete($id),
+            'menu_id'
+        );
     }
 
     public function allForOptions()
