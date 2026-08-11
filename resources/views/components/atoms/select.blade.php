@@ -1,5 +1,6 @@
 @props([
     'options' => [],       // array of ['value' => ..., 'label' => ...]
+    'optionsVar' => null,  // nama variabel Alpine reaktif di scope luar
     'placeholder' => null,
     'model' => null,       // wajib: expression Alpine, misal 'filters.role'
     'onChange' => null,    // opsional: expression Alpine dijalankan setelah pilihan berubah
@@ -13,7 +14,7 @@
     x-data="{
         open: false,
         search: '',
-        options: {{ $optionsJson }},
+        options: {{ $optionsVar ? $optionsVar : $optionsJson }},
         get filtered() {
             if (!this.search) return this.options;
             const q = this.search.toLowerCase();
