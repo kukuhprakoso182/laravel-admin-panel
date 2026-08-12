@@ -28,11 +28,6 @@
         openDropdown() {
             this.open = true;
             this.$nextTick(() => {
-                // Hitung posisi dropdown relatif terhadap viewport (bukan
-                // relatif terhadap parent select), supaya dropdown-nya
-                // dirender dengan position: fixed dan TIDAK ikut terpotong
-                // oleh overflow-y-auto milik ancestor mana pun (mis. modal
-                // yang punya max-height + scroll).
                 const rect = this.$refs.trigger.getBoundingClientRect();
                 this.dropdownStyle = `top: ${rect.bottom + 4}px; left: ${rect.left}px; width: ${rect.width}px;`;
                 this.$refs.searchInput.focus();
@@ -45,6 +40,9 @@
             {{ $onChange ?? '' }}
         },
     }"
+    @if($optionsVar)
+        x-effect="options = {{ $optionsVar }}"
+    @endif
     x-on:click.outside="open = false"
     x-on:scroll.document.capture="open = false"
     x-on:resize.window="open = false"
