@@ -29,6 +29,7 @@ trait HasTable
             request: $request,
             searchableColumns: $this->searchableColumns(),
             sortableColumns: $this->sortableColumns(),
+            defaultSort: $this->defaultSort(),
             query: $this->baseQuery($request),
         );
 
