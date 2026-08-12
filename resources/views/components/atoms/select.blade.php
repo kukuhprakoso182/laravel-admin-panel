@@ -1,6 +1,6 @@
 @props([
-    'options' => [],       // array of ['value' => ..., 'label' => ...]
-    'optionsVar' => null,  // nama variabel Alpine reaktif di scope luar
+    'options' => [],       // array of ['value' => ..., 'label' => ...] — mode statis
+    'optionsVar' => null,  // nama variabel Alpine reaktif di scope luar, mis. 'provinsiOptions'
     'placeholder' => null,
     'model' => null,       // wajib: expression Alpine, misal 'filters.role'
     'onChange' => null,    // opsional: expression Alpine dijalankan setelah pilihan berubah
@@ -14,6 +14,7 @@
     x-data="{
         open: false,
         search: '',
+        dropdownStyle: '',
         options: {{ $optionsVar ? $optionsVar : $optionsJson }},
         get filtered() {
             if (!this.search) return this.options;
@@ -24,6 +25,19 @@
             const found = this.options.find(o => String(o.value) === String({{ $model }}));
             return found ? found.label : {{ $placeholder ? "'".addslashes($placeholder)."'" : "''" }};
         },
+        openDropdown() {
+            this.open = true;
+            this.$nextTick(() => {
+                // Hitung posisi dropdown relatif terhadap viewport (bukan
+                // relatif terhadap parent select), supaya dropdown-nya
+                // dirender dengan position: fixed dan TIDAK ikut terpotong
+                // oleh overflow-y-auto milik ancestor mana pun (mis. modal
+                // yang punya max-height + scroll).
+                const rect = this.$refs.trigger.getBoundingClientRect();
+                this.dropdownStyle = `top: ${rect.bottom + 4}px; left: ${rect.left}px; width: ${rect.width}px;`;
+                this.$refs.searchInput.focus();
+            });
+        },
         select(value) {
             {{ $model }} = value;
             this.open = false;
@@ -32,11 +46,14 @@
         },
     }"
     x-on:click.outside="open = false"
+    x-on:scroll.document.capture="open = false"
+    x-on:resize.window="open = false"
     {{ $attributes->merge(['class' => 'relative']) }}
 >
     <button
         type="button"
-        x-on:click="open = !open; if (open) $nextTick(() => $refs.searchInput.focus())"
+        x-ref="trigger"
+        x-on:click="open ? (open = false) : openDropdown()"
         class="w-full flex items-center justify-between gap-2 py-2.5 px-4 rounded-lg border border-gray-200 text-sm text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
     >
         <span x-text="selectedLabel" class="truncate"></span>
@@ -49,7 +66,8 @@
         x-show="open"
         x-cloak
         x-transition
-        class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden"
+        x-bind:style="dropdownStyle"
+        class="fixed z-50 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden"
     >
         <div class="p-2 border-b border-gray-100">
             <input
