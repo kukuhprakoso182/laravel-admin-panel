@@ -4,21 +4,22 @@ namespace App\Services;
 
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Services\Contracts\Exportable;
-use App\Support\TableResponseFormatter;
+use App\Support\CsvExporter;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use App\Support\CsvExporter;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class UserService implements Exportable
+class UserService extends BaseService implements Exportable
 {
     public function __construct(protected UserRepositoryInterface $userRepository)
     {
+        parent::__construct($userRepository);
     }
 
-    public function list(int $perPage = 15)
+    protected function repository(): object
     {
-        return $this->userRepository->paginate($perPage);
+        return $this->userRepository;
     }
 
     public function find(int|string $id)
@@ -26,6 +27,7 @@ class UserService implements Exportable
         return $this->userRepository->find($id)->load('roles');
     }
 
+    // Override: create butuh hash password + sync roles
     public function create(array $data)
     {
         $data['password'] = Hash::make($data['password']);
@@ -61,44 +63,6 @@ class UserService implements Exportable
         return $user->load('roles');
     }
 
-    public function delete(int|string $id): bool
-    {
-        return $this->userRepository->delete($id);
-    }
-
-    public function table(Request $request): array
-    {
-        $query = $this->baseQuery($request);
-
-        $paginated = $this->userRepository->paginateFiltered(
-            request: $request,
-            searchableColumns: ['name', 'email'],
-            sortableColumns: ['name', 'email', 'status', 'created_at'],
-            query: $query,
-        );
-
-        return TableResponseFormatter::format($paginated, fn ($user) => [
-            'id' => $user->id,
-            'name' => $user->name,
-            'email' => $user->email,
-            'status' => $user->status,
-            'created_at' => $user->created_at,
-            'roles' => $user->roles->map(fn ($r) => ['id' => $r->id, 'name' => $r->name]),
-        ]);
-    }
-
-    protected function baseQuery(Request $request)
-    {
-        $query = $this->userRepository->query()->with('roles');
-
-        if ($request->filled('role')) {
-            $query->whereHas('roles', fn ($q) => $q->where('roles.id', $request->get('role')));
-        }
-
-        return $query;
-    }
-
-
     public function export(Request $request): StreamedResponse
     {
         $query = $this->baseQuery($request);
@@ -107,7 +71,7 @@ class UserService implements Exportable
             $search = $request->string('search');
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                ->orWhere('email', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%");
             });
         }
 
@@ -125,5 +89,38 @@ class UserService implements Exportable
             ],
             filenamePrefix: 'users',
         );
+    }
+
+    protected function baseQuery(Request $request): Builder
+    {
+        $query = parent::baseQuery($request)->with('roles');
+
+        if ($request->filled('role')) {
+            $query->whereHas('roles', fn ($q) => $q->where('roles.id', $request->get('role')));
+        }
+
+        return $query;
+    }
+
+    protected function searchableColumns(): array
+    {
+        return ['name', 'email'];
+    }
+
+    protected function sortableColumns(): array
+    {
+        return ['name', 'email', 'status', 'created_at'];
+    }
+
+    protected function formatRow(mixed $item): array
+    {
+        return [
+            'id' => $item->id,
+            'name' => $item->name,
+            'email' => $item->email,
+            'status' => $item->status,
+            'created_at' => $item->created_at,
+            'roles' => $item->roles->map(fn ($r) => ['id' => $r->id, 'name' => $r->name]),
+        ];
     }
 }

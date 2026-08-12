@@ -4,37 +4,24 @@ namespace App\Services;
 
 use App\Repositories\Contracts\RoleRepositoryInterface;
 use App\Services\Concerns\HandlesForeignKeyViolation;
-use App\Support\TableResponseFormatter;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
-class RoleService
+class RoleService extends BaseService
 {
     use HandlesForeignKeyViolation;
 
     public function __construct(protected RoleRepositoryInterface $roleRepository)
     {
+        parent::__construct($roleRepository);
     }
 
-    public function list(int $perPage = 15)
+    protected function repository(): object
     {
-        return $this->roleRepository->paginate($perPage);
+        return $this->roleRepository;
     }
 
-    public function find(int|string $id)
-    {
-        return $this->roleRepository->find($id);
-    }
-
-    public function create(array $data)
-    {
-        return $this->roleRepository->create($data);
-    }
-
-    public function update(int|string $id, array $data)
-    {
-        return $this->roleRepository->update($id, $data);
-    }
-
+    // Override: delete butuh handle foreign key violation (role dipakai di user_has_roles)
     public function delete(int|string $id): bool
     {
         return $this->deleteOrFailOnForeignKey(
@@ -53,31 +40,6 @@ class RoleService
         return $this->roleRepository->allOrderedByName();
     }
 
-    protected function baseQuery(Request $request)
-    {
-        return $this->roleRepository->query()->withCount('users');
-    }
-
-    public function table(Request $request): array
-    {
-        $query = $this->baseQuery($request);
-
-        $paginated = $this->roleRepository->paginateFiltered(
-            request: $request,
-            searchableColumns: ['name', 'description'],
-            sortableColumns: ['name', 'created_at'],
-            query: $query,
-        );
-
-        return TableResponseFormatter::format($paginated, fn ($role) => [
-            'id' => $role->id,
-            'name' => $role->name,
-            'description' => $role->description,
-            'users_count' => $role->users_count,
-            'created_at' => $role->created_at,
-        ]);
-    }
-
     public function menuPermissionMatrix(int|string $roleId): array
     {
         $role = $this->roleRepository->find($roleId);
@@ -85,6 +47,32 @@ class RoleService
         return [
             'role' => ['id' => $role->id, 'name' => $role->name],
             'assigned' => $this->roleRepository->getAssignedMenuPermissionPairs($roleId),
+        ];
+    }
+
+    protected function baseQuery(Request $request): Builder
+    {
+        return parent::baseQuery($request)->withCount('users');
+    }
+
+    protected function searchableColumns(): array
+    {
+        return ['name', 'description'];
+    }
+
+    protected function sortableColumns(): array
+    {
+        return ['name', 'created_at'];
+    }
+
+    protected function formatRow(mixed $item): array
+    {
+        return [
+            'id' => $item->id,
+            'name' => $item->name,
+            'description' => $item->description,
+            'users_count' => $item->users_count,
+            'created_at' => $item->created_at,
         ];
     }
 }

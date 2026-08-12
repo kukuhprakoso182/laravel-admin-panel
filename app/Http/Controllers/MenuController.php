@@ -6,9 +6,8 @@ use App\Http\Requests\StoreMenuRequest;
 use App\Http\Requests\UpdateMenuRequest;
 use App\Services\IconService;
 use App\Services\MenuService;
-use Illuminate\Http\Request;
 
-class MenuController extends Controller
+class MenuController extends BaseCrudController
 {
     public function __construct(
         protected MenuService $menuService,
@@ -16,53 +15,46 @@ class MenuController extends Controller
     ) {
     }
 
+    protected function service(): object
+    {
+        return $this->menuService;
+    }
+
+    protected function viewName(): string
+    {
+        return 'pages.menus.index';
+    }
+
     public function index()
     {
-        return view('pages.menus.index', [
+        return view($this->viewName(), [
             'parentMenus' => $this->menuService->allForOptions(),
             'icons' => $this->iconService->allForOptions(),
         ]);
     }
 
-    public function data(Request $request)
-    {
-        return response()->json($this->menuService->table($request));
-    }
-
+    // Method khusus Menu, tidak ada di base
     public function tree()
     {
         return response()->json($this->menuService->tree());
     }
 
-    public function show(int|string $id)
+    protected function storeRequestClass(): string
     {
-        return response()->json($this->menuService->find($id));
+        return StoreMenuRequest::class;
     }
 
-    public function store(StoreMenuRequest $request)
+    protected function updateRequestClass(): string
     {
-        $menu = $this->menuService->create($request->validated());
-
-        return response()->json([
-            'message' => 'Menu berhasil ditambahkan.',
-            'data' => $menu,
-        ], 201);
+        return UpdateMenuRequest::class;
     }
 
-    public function update(UpdateMenuRequest $request, int|string $id)
+    protected function messages(): array
     {
-        $menu = $this->menuService->update($id, $request->validated());
-
-        return response()->json([
-            'message' => 'Menu berhasil diperbarui.',
-            'data' => $menu,
-        ]);
-    }
-
-    public function destroy(int|string $id)
-    {
-        $this->menuService->delete($id);
-
-        return response()->json(['message' => 'Menu berhasil dihapus.']);
+        return [
+            'created' => 'Menu berhasil ditambahkan.',
+            'updated' => 'Menu berhasil diperbarui.',
+            'deleted' => 'Menu berhasil dihapus.',
+        ];
     }
 }

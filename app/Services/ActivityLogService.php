@@ -3,15 +3,23 @@
 namespace App\Services;
 
 use App\Repositories\Contracts\ActivityLogRepositoryInterface;
+use App\Services\Concerns\HasTable;
 use App\Support\CsvExporter;
-use App\Support\TableResponseFormatter;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ActivityLogService
 {
+    use HasTable;
+
     public function __construct(protected ActivityLogRepositoryInterface $activityLogRepository)
     {
+    }
+
+    protected function repository(): object
+    {
+        return $this->activityLogRepository;
     }
 
     public function find(int|string $id)
@@ -19,7 +27,37 @@ class ActivityLogService
         return $this->activityLogRepository->find($id)->load('causer');
     }
 
-    protected function baseQuery(Request $request)
+    public function export(Request $request): StreamedResponse
+    {
+        $query = $this->baseQuery($request);
+
+        if ($request->filled('search')) {
+            $search = $request->string('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('description', 'like', "%{$search}%")
+                    ->orWhere('event', 'like', "%{$search}%")
+                    ->orWhere('ip_address', 'like', "%{$search}%");
+            });
+        }
+
+        $logs = $query->orderBy('created_at', 'desc')->get();
+
+        return CsvExporter::stream(
+            rows: $logs,
+            headers: ['Waktu', 'User', 'Event', 'Deskripsi', 'Subject', 'IP Address'],
+            mapRow: fn ($log) => [
+                optional($log->created_at)->format('Y-m-d H:i:s'),
+                optional($log->causer)->name ?? 'System',
+                $log->event,
+                $log->description,
+                $log->subject_type ? class_basename($log->subject_type) . ' #' . $log->subject_id : '-',
+                $log->ip_address,
+            ],
+            filenamePrefix: 'activity-logs',
+        );
+    }
+
+    protected function baseQuery(Request $request): Builder
     {
         $query = $this->activityLogRepository->query()->with('causer');
 
@@ -42,57 +80,32 @@ class ActivityLogService
         return $query;
     }
 
-    public function table(Request $request): array
+    protected function searchableColumns(): array
     {
-        $query = $this->baseQuery($request);
-
-        $paginated = $this->activityLogRepository->paginateFiltered(
-            request: $request,
-            searchableColumns: ['description', 'event', 'ip_address'],
-            sortableColumns: ['event', 'subject_type', 'created_at'],
-            defaultSort: 'created_at',
-            query: $query,
-        );
-
-        return TableResponseFormatter::format($paginated, fn ($log) => [
-            'id' => $log->id,
-            'event' => $log->event,
-            'description' => $log->description,
-            'subject_type' => $log->subject_type ? class_basename($log->subject_type) : null,
-            'subject_id' => $log->subject_id,
-            'causer' => $log->causer ? ['id' => $log->causer->id, 'name' => $log->causer->name] : null,
-            'ip_address' => $log->ip_address,
-            'created_at' => $log->created_at,
-        ]);
+        return ['description', 'event', 'ip_address'];
     }
 
-    public function export(Request $request): StreamedResponse
+    protected function sortableColumns(): array
     {
-        $query = $this->baseQuery($request);
+        return ['event', 'subject_type', 'created_at'];
+    }
 
-        if ($request->filled('search')) {
-            $search = $request->string('search');
-            $query->where(function ($q) use ($search) {
-                $q->where('description', 'like', "%{$search}%")
-                  ->orWhere('event', 'like', "%{$search}%")
-                  ->orWhere('ip_address', 'like', "%{$search}%");
-            });
-        }
+    protected function defaultSort(): string
+    {
+        return 'created_at';
+    }
 
-        $logs = $query->orderBy('created_at', 'desc')->get();
-
-        return CsvExporter::stream(
-            rows: $logs,
-            headers: ['Waktu', 'User', 'Event', 'Deskripsi', 'Subject', 'IP Address'],
-            mapRow: fn ($log) => [
-                optional($log->created_at)->format('Y-m-d H:i:s'),
-                optional($log->causer)->name ?? 'System',
-                $log->event,
-                $log->description,
-                $log->subject_type ? class_basename($log->subject_type) . ' #' . $log->subject_id : '-',
-                $log->ip_address,
-            ],
-            filenamePrefix: 'activity-logs',
-        );
+    protected function formatRow(mixed $item): array
+    {
+        return [
+            'id' => $item->id,
+            'event' => $item->event,
+            'description' => $item->description,
+            'subject_type' => $item->subject_type ? class_basename($item->subject_type) : null,
+            'subject_id' => $item->subject_id,
+            'causer' => $item->causer ? ['id' => $item->causer->id, 'name' => $item->causer->name] : null,
+            'ip_address' => $item->ip_address,
+            'created_at' => $item->created_at,
+        ];
     }
 }

@@ -5,53 +5,39 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreIconRequest;
 use App\Http\Requests\UpdateIconRequest;
 use App\Services\IconService;
-use Illuminate\Http\Request;
 
-class IconController extends Controller
+class IconController extends BaseCrudController
 {
     public function __construct(protected IconService $iconService)
     {
     }
 
-    public function index()
+    protected function service(): object
     {
-        return view('pages.icons.index');
+        return $this->iconService;
     }
 
-    public function data(Request $request)
+    protected function viewName(): string
     {
-        return response()->json($this->iconService->table($request));
+        return 'pages.icons.index';
     }
 
-    public function show(int|string $id)
+    protected function storeRequestClass(): string
     {
-        return response()->json($this->iconService->find($id));
+        return StoreIconRequest::class;
     }
 
-    public function store(StoreIconRequest $request)
+    protected function updateRequestClass(): string
     {
-        $icon = $this->iconService->create($request->validated());
-
-        return response()->json([
-            'message' => 'Icon berhasil ditambahkan.',
-            'data' => $icon,
-        ], 201);
+        return UpdateIconRequest::class;
     }
 
-    public function update(UpdateIconRequest $request, int|string $id)
+    protected function messages(): array
     {
-        $icon = $this->iconService->update($id, $request->validated());
-
-        return response()->json([
-            'message' => 'Icon berhasil diperbarui.',
-            'data' => $icon,
-        ]);
-    }
-
-    public function destroy(int|string $id)
-    {
-        $this->iconService->delete($id);
-
-        return response()->json(['message' => 'Icon berhasil dihapus.']);
+        return [
+            'created' => 'Icon berhasil ditambahkan.',
+            'updated' => 'Icon berhasil diperbarui.',
+            'deleted' => 'Icon berhasil dihapus.',
+        ];
     }
 }

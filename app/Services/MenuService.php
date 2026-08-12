@@ -4,37 +4,46 @@ namespace App\Services;
 
 use App\Repositories\Contracts\MenuRepositoryInterface;
 use App\Services\Concerns\HandlesForeignKeyViolation;
-use App\Support\TableResponseFormatter;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
-class MenuService
+class MenuService extends BaseService
 {
     use HandlesForeignKeyViolation;
 
-    public function __construct(protected MenuRepositoryInterface $menuRepository) {}
-
-    public function list(int $perPage = 15)
+    public function __construct(protected MenuRepositoryInterface $menuRepository)
     {
-        return $this->menuRepository->paginate($perPage);
+        parent::__construct($menuRepository);
     }
 
+    protected function repository(): object
+    {
+        return $this->menuRepository;
+    }
+
+    // Override: find butuh eager-load relasi tambahan
     public function find(int|string $id)
     {
         return $this->menuRepository->find($id)->load('parent', 'icon');
     }
 
+    // Override: create butuh load relasi setelah insert
     public function create(array $data)
     {
         $menu = $this->menuRepository->create($data);
+
         return $menu->load('parent', 'icon');
     }
 
+    // Override: update butuh load relasi setelah update
     public function update(int|string $id, array $data)
     {
         $menu = $this->menuRepository->update($id, $data);
+
         return $menu->load('parent', 'icon');
     }
 
+    // Override: delete butuh handle foreign key violation (dipakai sebagai parent_id di menu lain)
     public function delete(int|string $id): bool
     {
         return $this->deleteOrFailOnForeignKey(
@@ -43,6 +52,7 @@ class MenuService
         );
     }
 
+    // Method khusus Menu, tidak ada di base
     public function allForOptions()
     {
         return $this->menuRepository->allOrderedByOrder();
@@ -61,49 +71,54 @@ class MenuService
 
     protected function formatTree($menus)
     {
-        return $menus->map(function ($menu) {
-            return [
-                'id' => $menu->id,
-                'name' => $menu->name,
-                'link' => $menu->link,
-                'is_active' => $menu->is_active,
-                'icon' => $menu->icon ? ['id' => $menu->icon->id, 'value' => $menu->icon->value] : null,
-                'children' => $this->formatTree($menu->childrenRecursive),
-            ];
-        })->values()->all();
+        return $menus->map(fn ($menu) => [
+            'id' => $menu->id,
+            'name' => $menu->name,
+            'link' => $menu->link,
+            'is_active' => $menu->is_active,
+            'icon' => $menu->icon ? ['id' => $menu->icon->id, 'value' => $menu->icon->value] : null,
+            'children' => $this->formatTree($menu->childrenRecursive),
+        ])->values()->all();
     }
 
-    protected function baseQuery(Request $request)
+    // Override: query dasar butuh eager-load + filter parent_id
+    protected function baseQuery(Request $request): Builder
     {
-        $query = $this->menuRepository->query()->with('parent', 'icon');
+        $query = parent::baseQuery($request)->with('parent', 'icon');
 
         if ($request->filled('parent_id')) {
-            $query->where('parent_id', $request->get('parent_id'));
+            $query->where('parent_id', $request->input('parent_id'));
         }
 
         return $query;
     }
 
-    public function table(Request $request): array
+    // Override: default sort beda dari base ('created_at')
+    protected function defaultSort(): string
     {
-        $query = $this->baseQuery($request);
+        return 'order';
+    }
 
-        $paginated = $this->menuRepository->paginateFiltered(
-            request: $request,
-            searchableColumns: ['name', 'link'],
-            sortableColumns: ['name', 'order', 'is_active', 'created_at'],
-            defaultSort: 'order',
-            query: $query,
-        );
+    protected function searchableColumns(): array
+    {
+        return ['name', 'link'];
+    }
 
-        return TableResponseFormatter::format($paginated, fn ($menu) => [
-            'id' => $menu->id,
-            'name' => $menu->name,
-            'link' => $menu->link,
-            'order' => $menu->order,
-            'is_active' => $menu->is_active,
-            'parent' => $menu->parent ? ['id' => $menu->parent->id, 'name' => $menu->parent->name] : null,
-            'icon' => $menu->icon ? ['id' => $menu->icon->id, 'value' => $menu->icon->value] : null,
-        ]);
+    protected function sortableColumns(): array
+    {
+        return ['name', 'order', 'is_active', 'created_at'];
+    }
+
+    protected function formatRow(mixed $item): array
+    {
+        return [
+            'id' => $item->id,
+            'name' => $item->name,
+            'link' => $item->link,
+            'order' => $item->order,
+            'is_active' => $item->is_active,
+            'parent' => $item->parent ? ['id' => $item->parent->id, 'name' => $item->parent->name] : null,
+            'icon' => $item->icon ? ['id' => $item->icon->id, 'value' => $item->icon->value] : null,
+        ];
     }
 }

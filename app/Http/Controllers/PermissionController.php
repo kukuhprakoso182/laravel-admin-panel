@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\HasDestroyAction;
+use App\Http\Controllers\Concerns\HasIndexView;
+use App\Http\Controllers\Concerns\HasShowAction;
+use App\Http\Controllers\Concerns\HasStoreAction;
+use App\Http\Controllers\Concerns\HasUpdateAction;
 use App\Http\Requests\StorePermissionRequest;
 use App\Http\Requests\UpdatePermissionRequest;
 use App\Services\PermissionService;
@@ -9,42 +14,44 @@ use Illuminate\Http\Request;
 
 class PermissionController extends Controller
 {
-    public function __construct(protected PermissionService $permissionService) {}
+    use HasIndexView, HasShowAction, HasStoreAction, HasUpdateAction, HasDestroyAction;
 
-    public function index()
+    public function __construct(protected PermissionService $permissionService)
     {
-        return view('pages.permissions.index');
     }
 
+    protected function service(): object
+    {
+        return $this->permissionService;
+    }
+
+    protected function viewName(): string
+    {
+        return 'pages.permissions.index';
+    }
+
+    // Override: PermissionService pakai method data(), bukan table()
     public function data(Request $request)
     {
         return response()->json($this->permissionService->data($request));
     }
 
-    public function show(int|string $id)
+    protected function storeRequestClass(): string
     {
-        return response()->json($this->permissionService->find($id));
+        return StorePermissionRequest::class;
     }
 
-    public function store(StorePermissionRequest $request)
+    protected function updateRequestClass(): string
     {
-        return response()->json([
-            'message' => 'Permission berhasil ditambahkan.',
-            'data' => $this->permissionService->create($request->validated()),
-        ], 201);
+        return UpdatePermissionRequest::class;
     }
 
-    public function update(UpdatePermissionRequest $request, int|string $id)
+    protected function messages(): array
     {
-        return response()->json([
-            'message' => 'Permission berhasil diperbarui.',
-            'data' => $this->permissionService->update($id, $request->validated()),
-        ]);
-    }
-
-    public function destroy(int|string $id)
-    {
-        $this->permissionService->delete($id);
-        return response()->json(['message' => 'Permission berhasil dihapus']);
+        return [
+            'created' => 'Permission berhasil ditambahkan.',
+            'updated' => 'Permission berhasil diperbarui.',
+            'deleted' => 'Permission berhasil dihapus.',
+        ];
     }
 }

@@ -3,48 +3,31 @@
 namespace App\Services;
 
 use App\Repositories\Contracts\IconRepositoryInterface;
-use App\Support\TableResponseFormatter;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
-class IconService
+class IconService extends BaseService
 {
     public function __construct(protected IconRepositoryInterface $iconRepository)
     {
+        parent::__construct($iconRepository);
     }
 
-    public function list(int $perPage = 15)
+    protected function repository(): object
     {
-        return $this->iconRepository->paginate($perPage);
+        return $this->iconRepository;
     }
 
-    public function find(int|string $id)
-    {
-        return $this->iconRepository->find($id);
-    }
-
-    public function create(array $data)
-    {
-        return $this->iconRepository->create($data);
-    }
-
-    public function update(int|string $id, array $data)
-    {
-        return $this->iconRepository->update($id, $data);
-    }
-
-    public function delete(int|string $id): bool
-    {
-        return $this->iconRepository->delete($id);
-    }
-
+    // Method khusus Icon, tidak ada di base
     public function allForOptions()
     {
         return $this->iconRepository->allOrderedByValue();
     }
 
-    protected function baseQuery(Request $request)
+    // Override: tambah filter section di atas query dasar
+    protected function baseQuery(Request $request): Builder
     {
-        $query = $this->iconRepository->query();
+        $query = parent::baseQuery($request);
 
         if ($request->filled('section')) {
             $query->where('section', $request->get('section'));
@@ -53,22 +36,23 @@ class IconService
         return $query;
     }
 
-    public function table(Request $request): array
+    protected function searchableColumns(): array
     {
-        $query = $this->baseQuery($request);
+        return ['value', 'section'];
+    }
 
-        $paginated = $this->iconRepository->paginateFiltered(
-            request: $request,
-            searchableColumns: ['value', 'section'],
-            sortableColumns: ['value', 'section', 'is_active', 'created_at'],
-            query: $query,
-        );
+    protected function sortableColumns(): array
+    {
+        return ['value', 'section', 'is_active', 'created_at'];
+    }
 
-        return TableResponseFormatter::format($paginated, fn ($icon) => [
-            'id' => $icon->id,
-            'value' => $icon->value,
-            'section' => $icon->section,
-            'is_active' => $icon->is_active,
-        ]);
+    protected function formatRow(mixed $item): array
+    {
+        return [
+            'id' => $item->id,
+            'value' => $item->value,
+            'section' => $item->section,
+            'is_active' => $item->is_active,
+        ];
     }
 }

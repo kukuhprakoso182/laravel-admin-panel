@@ -8,56 +8,52 @@ use App\Services\PermissionService;
 use App\Services\RoleService;
 use Illuminate\Http\Request;
 
-class RoleController extends Controller
+class RoleController extends BaseCrudController
 {
-    public function __construct(protected RoleService $roleService, protected PermissionService $permissionService)
-    {
+    public function __construct(
+        protected RoleService $roleService,
+        protected PermissionService $permissionService,
+    ) {
     }
 
+    protected function service(): object
+    {
+        return $this->roleService;
+    }
+
+    protected function viewName(): string
+    {
+        return 'pages.roles.index';
+    }
+
+    // Override: index butuh data permission untuk form
     public function index()
     {
-        return view('pages.roles.index', [
+        return view($this->viewName(), [
             'permissions' => $this->permissionService->allForOptions(),
         ]);
     }
 
-    public function data(Request $request)
+    protected function storeRequestClass(): string
     {
-        return response()->json($this->roleService->table($request));
+        return StoreRoleRequest::class;
     }
 
-    public function show(int|string $id)
+    protected function updateRequestClass(): string
     {
-        return response()->json($this->roleService->find($id));
+        return UpdateRoleRequest::class;
     }
 
-    public function store(StoreRoleRequest $request)
+    protected function messages(): array
     {
-        $role = $this->roleService->create($request->validated());
-
-        return response()->json([
-            'message' => 'Role berhasil ditambahkan.',
-            'data' => $role,
-        ], 201);
+        return [
+            'created' => 'Role berhasil ditambahkan.',
+            'updated' => 'Role berhasil diperbarui.',
+            'deleted' => 'Role berhasil dihapus.',
+        ];
     }
 
-    public function update(UpdateRoleRequest $request, int|string $id)
-    {
-        $role = $this->roleService->update($id, $request->validated());
-
-        return response()->json([
-            'message' => 'Role berhasil diperbarui.',
-            'data' => $role,
-        ]);
-    }
-
-    public function destroy(int|string $id)
-    {
-        $this->roleService->delete($id);
-
-        return response()->json(['message' => 'Role berhasil dihapus.']);
-    }
-
+    // Method khusus Role, tidak ada di base
     public function syncPermissions(Request $request, int|string $id)
     {
         $data = $request->validate([

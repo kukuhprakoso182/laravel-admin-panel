@@ -8,7 +8,7 @@ use App\Services\RoleService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 
-class UserController extends Controller
+class UserController extends BaseCrudController
 {
     public function __construct(
         protected UserService $userService,
@@ -16,48 +16,41 @@ class UserController extends Controller
     ) {
     }
 
+    protected function service(): object
+    {
+        return $this->userService;
+    }
+
+    protected function viewName(): string
+    {
+        return 'pages.users.index';
+    }
+
+    // Override: index butuh data role untuk dropdown
     public function index()
     {
-        return view('pages.users.index', [
+        return view($this->viewName(), [
             'roles' => $this->roleService->allForOptions(),
         ]);
     }
 
-    public function data(Request $request)
+    protected function storeRequestClass(): string
     {
-        return response()->json($this->userService->table($request));
+        return StoreUserRequest::class;
     }
 
-    public function show(int|string $id)
+    protected function updateRequestClass(): string
     {
-        return response()->json($this->userService->find($id));
+        return UpdateUserRequest::class;
     }
 
-    public function store(StoreUserRequest $request)
+    protected function messages(): array
     {
-        $user = $this->userService->create($request->validated());
-
-        return response()->json([
-            'message' => 'User berhasil ditambahkan.',
-            'data' => $user,
-        ], 201);
-    }
-
-    public function update(UpdateUserRequest $request, int|string $id)
-    {
-        $user = $this->userService->update($id, $request->validated());
-
-        return response()->json([
-            'message' => 'User berhasil diperbarui.',
-            'data' => $user,
-        ]);
-    }
-
-    public function destroy(int|string $id)
-    {
-        $this->userService->delete($id);
-
-        return response()->json(['message' => 'User berhasil dihapus.']);
+        return [
+            'created' => 'User berhasil ditambahkan.',
+            'updated' => 'User berhasil diperbarui.',
+            'deleted' => 'User berhasil dihapus.',
+        ];
     }
 
     public function export(Request $request)
