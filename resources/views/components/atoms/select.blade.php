@@ -15,7 +15,7 @@
         open: false,
         search: '',
         dropdownStyle: '',
-        options: {{ $optionsVar ? $optionsVar : $optionsJson }},
+        options: {{ $optionsJson }},
         get filtered() {
             if (!this.search) return this.options;
             const q = this.search.toLowerCase();
