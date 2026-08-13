@@ -1,4 +1,4 @@
-<x-layouts.guest>
+<x-layouts.guest title="500">
     <div class="w-full max-w-md mx-auto text-center">
         <p class="text-6xl font-bold text-red-600">500</p>
         <h1 class="mt-4 text-xl font-semibold text-gray-800">Terjadi Kesalahan Server</h1>

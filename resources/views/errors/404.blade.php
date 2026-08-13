@@ -1,4 +1,4 @@
-<x-layouts.guest>
+<x-layouts.guest title="404">
     <div class="w-full max-w-md mx-auto text-center">
         <p class="text-6xl font-bold text-blue-600">404</p>
         <h1 class="mt-4 text-xl font-semibold text-gray-800">Halaman Tidak Ditemukan</h1>
