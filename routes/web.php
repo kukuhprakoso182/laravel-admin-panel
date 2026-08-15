@@ -82,26 +82,4 @@ Route::middleware('auth')->group(function () {
         Route::get('/activity-logs/export', [ActivityLogController::class, 'export'])->name('activity-logs.export');
         Route::get('/activity-logs/{id}', [ActivityLogController::class, 'show']);
     });
-    // Route 'settings.index' dicek di sidebar-footer.blade.php lewat Route::has() —
-    // sementara diarahkan ke Menus, ganti ke controller Settings sungguhan kalau sudah ada.
-    // Route::get('/settings', [MenuController::class, 'index'])->name('settings.index');
 });
-// Route::get('/', function () {
-//     return view('dashboard');
-// });
-
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->name('dashboard');
-
-// Route::get('/logout', function () {
-//     return view('pages.dashboard.index');
-// })->name('logout');
-
-// Route::get('/profile-edit', function () {
-//     return view('pages.dashboard.index');
-// })->name('profile.edit');
-
-// Route::get('/settings-index', function () {
-//     return view('pages.dashboard.index');
-// })->name('settings.index');
