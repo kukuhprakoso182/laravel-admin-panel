@@ -2,6 +2,19 @@
 
 Base project admin panel siap pakai berbasis **Laravel + Alpine.js + Tailwind CSS**. Dirancang sebagai starting point untuk membangun sistem back-office dengan CRUD, role-based permission per-menu, activity logging, dan export data — tanpa perlu setup ulang dari nol setiap kali mulai project baru.
 
+## Daftar Isi
+
+- [Fitur Utama](#fitur-utama)
+- [Tech Stack](#tech-stack)
+- [Instalasi](#instalasi)
+- [Struktur Project](#struktur-project)
+- [Konvensi & Pola yang Dipakai](#konvensi--pola-yang-dipakai)
+- [Sistem Permission](#sistem-permission)
+- [Activity Log](#activity-log)
+- [Testing](#testing)
+- [Yang Masih Perlu Ditambahkan](#yang-masih-perlu-ditambahkan)
+- [Kontribusi / Menambah Modul Baru](#kontribusi--menambah-modul-baru)
+
 ## Fitur Utama
 
 - **CRUD generik** yang konsisten di semua modul (search, sort, pagination, bulk-delete, export CSV)
@@ -50,32 +63,59 @@ Buka `http://127.0.0.1:8000` — login dengan akun default hasil seeder (lihat `
 
 ## Struktur Project
 
-Project ini konsisten memakai **Repository + Service pattern** di semua modul — bukan logic langsung di Controller.
+Project ini konsisten memakai **Repository + Service pattern** di semua modul — bukan logic langsung di Controller. Sebagian besar behavior CRUD generik (index, data-table, show, store, update, destroy) disediakan lewat base class + trait, supaya Controller/Service tiap modul cukup mengisi beberapa method kecil, bukan menulis ulang CRUD dari nol.
 
 ```
 app/
 ├── Http/
-│   ├── Controllers/       # Tipis — cuma terima request, panggil Service, balas response
+│   ├── Controllers/
+│   │   ├── BaseCrudController.php   # Gabungan trait Has*Action di bawah — extend ini untuk controller CRUD baru
+│   │   ├── Concerns/                 # Trait per-aksi controller, dipakai BaseCrudController
+│   │   │   ├── HasIndexView.php          # index() -> return view()
+│   │   │   ├── HasTableAction.php        # data() -> JSON untuk data-table (search/sort/paginate)
+│   │   │   ├── HasShowAction.php         # show($id) -> JSON detail
+│   │   │   ├── HasStoreAction.php        # store() -> validasi via FormRequest + create
+│   │   │   ├── HasUpdateAction.php       # update($id) -> validasi via FormRequest + update
+│   │   │   ├── HasDestroyAction.php      # destroy($id) -> delete
+│   │   │   └── ValidatesWithFormRequest.php  # helper validasi + pesan sukses standar
+│   │   └── ...                       # Controller per-modul, extends BaseCrudController
 │   ├── Middleware/
-│   │   └── CheckPermission.php   # Middleware inti sistem otorisasi (lihat bagian Permission System)
-│   └── Requests/          # FormRequest untuk validasi, semua extends BaseFormRequest
+│   │   └── CheckPermission.php       # Middleware inti sistem otorisasi (lihat bagian Permission System)
+│   └── Requests/                     # FormRequest untuk validasi, semua extends BaseFormRequest
 ├── Models/                # Eloquent model, murni relasi & accessor — tanpa query logic kompleks
-├── Repositories/          # Query builder murni — tidak tahu apa-apa soal HTTP/JSON
-│   └── Contracts/         # Interface, di-bind ke implementasi di RepositoryServiceProvider
-├── Services/              # Business logic — orkestrasi Repository, transformasi data untuk response
+├── Repositories/
+│   ├── BaseRepository.php        # Implementasi CRUD dasar (all/paginate/find/create/update/delete) + paginateFiltered()
+│   └── Contracts/
+│       └── BaseRepositoryInterface.php   # Kontrak dasar, di-extend oleh interface tiap modul
+├── Services/
+│   ├── BaseService.php            # Gabungan trait HasCrud + HasTable — extend ini untuk service CRUD baru
+│   ├── Concerns/
+│   │   ├── HasCrud.php                # find/create/update/delete/list, delegasi ke repository()
+│   │   ├── HasTable.php               # table(), butuh searchableColumns()/sortableColumns()/formatRow() dari modul
+│   │   └── HandlesForeignKeyViolation.php  # Ubah error FK constraint jadi pesan validasi yang rapi
 │   ├── Contracts/
-│   │   └── Exportable.php # Interface untuk Service yang punya fitur export CSV
-│   ├── MenuAliasResolver.php  # Resolve link_alias menu -> menu_id, dengan cache
-│   └── SidebarService.php     # Build struktur sidebar dari data menu + permission user
+│   │   └── Exportable.php         # Interface untuk Service yang punya fitur export CSV
+│   ├── MenuAliasResolver.php      # Resolve link_alias menu -> menu_id, dengan cache
+│   └── SidebarService.php         # Build struktur sidebar dari data menu + permission user
 ├── Support/
 │   ├── CsvExporter.php            # Util reusable untuk stream CSV, dipakai semua modul
 │   └── TableResponseFormatter.php # Format response paginated konsisten (data + meta)
 └── Traits/
     └── LogsActivity.php   # Trait — tinggal `use LogsActivity` di model, otomatis tercatat ke activity_logs
 
+database/
+└── seeders/
+    ├── UserSeeder.php                 # Akun default untuk login awal
+    ├── MenuSeeder.php                 # Data menu (link_alias, icon_id, parent_id untuk nested)
+    └── RoleMenuPermissionSeeder.php   # Mapping role -> menu -> permission (matrix eksplisit)
+
+routes/
+└── web.php   # Semua route modul didaftarkan di sini, dibungkus middleware `permission:{aksi},{link_alias}`
+
 resources/
 ├── js/
-|   ├── components/ 
+│   ├── alpine-loader.js   # Registrasi module JS per halaman — daftarkan module baru di sini (lihat data-module)
+│   ├── components/
 │   ├── pages/              # 1 file per modul, isi state Alpine (x-data) untuk halaman itu
 │   └── utils/               # apiFetch, format tanggal, normalisasi response paginated, dll — reusable
 └── views/
@@ -101,13 +141,22 @@ Controller **tidak pernah** query langsung ke Model. Service **tidak pernah** ta
 ### 2. Menambah modul CRUD baru
 
 1. **Model** — buat model + migration.
-2. **Repository** — extends `BaseRepository`, implements interface sendiri (kalau butuh method custom di luar CRUD dasar).
-3. **Service** — inject Repository, implementasikan minimal: `table()` (untuk data-table), dan `baseQuery()` sebagai satu sumber query yang dipakai bareng oleh `table()` dan `export()`.
+2. **Repository** — `extends BaseRepository`, `implements XxxRepositoryInterface` sendiri (`extends BaseRepositoryInterface`). Tambahkan method custom di interface kalau butuh query khusus di luar CRUD dasar.
+3. **Service** — `extends BaseService`, inject Repository lewat constructor, lalu implementasikan:
+   - `repository(): object` — kembalikan instance repository
+   - `searchableColumns(): array` — kolom yang boleh dicari
+   - `sortableColumns(): array` — kolom yang boleh dipakai sort (whitelist)
+   - `formatRow(mixed $item): array` — bentuk row untuk response data-table
+   - Override `baseQuery()` kalau butuh filter tambahan di atas query dasar (dipakai bareng oleh `table()` dan `export()` kalau modul punya export).
 4. **FormRequest** — `StoreXxxRequest`/`UpdateXxxRequest`, keduanya extends `BaseFormRequest` (otomatis balas JSON 422 untuk request AJAX, redirect+flash untuk request form biasa).
-5. **Controller** — tipis, delegasikan ke Service.
+5. **Controller** — `extends BaseCrudController`, implementasikan:
+   - `service(): object`
+   - `viewName(): string`
+   - `storeRequestClass(): string` / `updateRequestClass(): string`
+   - `messages(): array` (pesan created/updated/deleted)
 6. **Route** — daftarkan di `routes/web.php`, ikuti format permission di bawah.
 7. **View** — buat folder di `resources/views/pages/{modul}/`, isi `index.blade.php` + `partials/table.blade.php` + `partials/form-modal.blade.php`, compose dari komponen `x-molecules.data-table`, `x-molecules.table-toolbar`, dll yang sudah ada — jangan tulis ulang markup tabel/pagination/modal dari nol.
-8. **JS** — buat `resources/js/pages/{modul}-management.js`, daftarkan di `resources/js/pages` import (cek file registrasi JS yang ada).
+8. **JS** — buat `resources/js/pages/{modul}-management.js` (isi `window.xxxManagement = function () {...}` untuk `x-data`), lalu daftarkan di `resources/js/alpine-loader.js` supaya ke-load otomatis lewat atribut `data-module` di view.
 
 ### 3. Export CSV
 
@@ -188,9 +237,11 @@ class YourModel extends Model
 
 Password otomatis di-redact dari log perubahan (`recordActivity()` sudah handle ini). Log bersifat **read-only** dari sisi UI (tidak ada create/edit/delete manual) — sesuai sifatnya sebagai audit trail.
 
-## Menjalankan Test
+## Testing
 
-*(Belum ada test suite — lihat bagian "Yang Masih Perlu Ditambahkan" di bawah)*
+Test suite untuk project ini **belum tersedia** — lihat bagian [Yang Masih Perlu Ditambahkan](#yang-masih-perlu-ditambahkan). Prioritas utama saat menambahkannya adalah middleware `CheckPermission`, karena itu satu-satunya lapisan yang mencegah route ter-expose tanpa otorisasi.
+
+Setelah test suite ditambahkan, jalankan dengan:
 
 ```bash
 php artisan test
@@ -212,3 +263,122 @@ Base project ini sudah solid untuk fondasi CRUD + permission, tapi beberapa hal 
 ## Kontribusi / Menambah Modul Baru
 
 Sebelum menambah modul, cek dulu apakah komponen yang dibutuhkan sudah ada di `resources/views/components/` — sebagian besar kebutuhan UI (select dengan search, badge status dinamis, tombol aksi baris tabel, konfirmasi hapus) sudah tersedia sebagai komponen reusable. Menulis ulang markup yang sudah ada sebagai komponen adalah anti-pola di project ini.
+
+Command `php artisan make:module` untuk generate module CRUD lengkap
+mengikuti arsitektur:
+
+- `BaseCrudController` (trait `HasIndexView`, `HasTableAction`, `HasShowAction`,
+  `HasStoreAction`, `HasUpdateAction`, `HasDestroyAction`)
+- `BaseService` (trait `HasCrud`, `HasTable`)
+- `BaseRepository` / `BaseRepositoryInterface`
+- View Blade + Alpine.js (`data-module`, `x-data`, modal form) seperti pola
+  `icon-management.js`
+
+## Prasyarat di project
+
+Command ini **mengasumsikan** base class/trait berikut sudah ada di project
+(sesuai yang kamu kirim):
+
+- `App\Http\Controllers\BaseCrudController`
+- `App\Http\Controllers\Concerns\{HasIndexView,HasTableAction,HasShowAction,HasStoreAction,HasUpdateAction,HasDestroyAction,ValidatesWithFormRequest}`
+- `App\Services\BaseService`
+- `App\Services\Concerns\{HasCrud,HasTable,HandlesForeignKeyViolation}`
+- `App\Repositories\BaseRepository`
+- `App\Repositories\Contracts\BaseRepositoryInterface`
+- `resources/js/alpine-loader.js` + helper global `apiUtils`, `formatUtils`, `tableUtils`
+- Komponen Blade `x-layouts.app`, `x-molecules.table-toolbar`,
+  `x-molecules.data-table`, `x-molecules.table-row-actions`,
+  `x-molecules.modal`, `x-molecules.modal-form-actions`, `x-atoms.input`
+
+Kalau salah satu belum ada, generate akan tetap jalan tapi hasilnya error
+saat dipakai (karena extends/reference class yang belum ada).
+
+## Instalasi
+
+1. Copy `app/Console/Commands/MakeModule.php` ke project.
+2. Copy folder `stubs/module/` ke root project (`stubs/module/*.stub`).
+
+## Cara pakai
+
+```bash
+php artisan make:module Icon
+```
+
+Menghasilkan:
+
+```
+app/Http/Controllers/IconController.php
+app/Http/Requests/StoreIconRequest.php
+app/Http/Requests/UpdateIconRequest.php
+app/Services/IconService.php
+app/Repositories/Contracts/IconRepositoryInterface.php
+app/Repositories/IconRepository.php
+app/Models/Icon.php                          (skip dengan --no-model)
+resources/views/pages/icons/index.blade.php
+resources/views/pages/icons/partials/table.blade.php
+resources/views/pages/icons/partials/form-modal.blade.php
+resources/js/pages/icon-management.js
+```
+
+Nama module-key & fungsi Alpine otomatis mengikuti pola project:
+`icon-management` / `window.iconManagement`, `product-category-management` /
+`window.productCategoryManagement`, dst — supaya tinggal didaftarkan ke
+`alpine-loader.js`.
+
+Opsi:
+
+- `--force` — timpa file yang sudah ada.
+- `--no-model` — jangan generate Model (kalau model sudah ada duluan).
+
+## Setelah generate (langkah manual, juga diprint di terminal)
+
+1. Pastikan migration tabel sudah ada & dijalankan (kolom minimal: `name`).
+2. Bind interface ke repository di `AppServiceProvider::register()`:
+
+   ```php
+   $this->app->bind(
+       \App\Repositories\Contracts\IconRepositoryInterface::class,
+       \App\Repositories\IconRepository::class
+   );
+   ```
+
+3. Tambahkan route di `routes/web.php`:
+
+   ```php
+   Route::prefix('icons')->name('icons.')->group(function () {
+       Route::get('/', [IconController::class, 'index'])->name('index');
+       Route::get('/data', [IconController::class, 'data'])->name('data');
+       Route::post('/', [IconController::class, 'store'])->name('store');
+       Route::get('/{id}', [IconController::class, 'show'])->name('show');
+       Route::put('/{id}', [IconController::class, 'update'])->name('update');
+       Route::delete('/{id}', [IconController::class, 'destroy'])->name('destroy');
+   });
+   ```
+
+4. Daftarkan module ke `resources/js/alpine-loader.js`:
+
+   ```javascript
+   'icon-management': () => import('./pages/icon-management.js'),
+   ```
+
+5. **Field default cuma `name`.** Sesuaikan kolom sesungguhnya di:
+   `Store/UpdateRequest` (rules), `Service` (searchableColumns/sortableColumns/formatRow),
+   view `partials/table.blade.php` & `partials/form-modal.blade.php`, dan
+   `resources/js/pages/{module}.js` (form state, openEdit, submitForm payload)
+   — sama seperti bedanya `IconService`/`icon-management.js` (value, section,
+   is_active) dari default generic ini.
+
+## Kustomisasi
+
+Semua template ada di `stubs/module/*.stub`. Placeholder:
+
+| Placeholder            | Contoh (`Icon`)      | Contoh (`ProductCategory`)          |
+|-------------------------|-----------------------|---------------------------------------|
+| `__CLASS__`             | `Icon`                | `ProductCategory`                     |
+| `__CLASS_PLURAL__`      | `Icons`               | `ProductCategories`                   |
+| `__VARIABLE__`          | `icon`                | `productCategory`                     |
+| `__VARIABLE_PLURAL__`   | `icons`               | `productCategories`                   |
+| `__KEBAB__`              | `icon`                | `product-category`                    |
+| `__KEBAB_PLURAL__`       | `icons`               | `product-categories`                  |
+| `__MODULE_KEY__`         | `icon-management`     | `product-category-management`         |
+| `__ALPINE_FN__`          | `iconManagement`      | `productCategoryManagement`           |

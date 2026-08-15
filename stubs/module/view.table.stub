@@ -1,0 +1,22 @@
+<x-molecules.data-table
+    :columns="[
+        ['key' => 'name', 'label' => 'Nama'],
+    ]"
+    rows-var="__VARIABLE_PLURAL__"
+    row-key="id"
+    empty-text="Tidak ada data __VARIABLE__."
+    show-number
+>
+    <x-slot:cell_name>
+        <span class="font-medium text-gray-900" x-text="row.name"></span>
+    </x-slot:cell_name>
+
+    <x-slot:actions>
+        <x-molecules.table-row-actions
+            edit-fn="openEdit(row)"
+            delete-label="row.name"
+            delete-url="`/__KEBAB_PLURAL__/${row.id}`"
+            on-delete-success="fetchData()"
+        />
+    </x-slot:actions>
+</x-molecules.data-table>

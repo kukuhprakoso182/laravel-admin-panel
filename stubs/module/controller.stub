@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\Store__CLASS__Request;
+use App\Http\Requests\Update__CLASS__Request;
+use App\Services\__CLASS__Service;
+
+class __CLASS__Controller extends BaseCrudController
+{
+    public function __construct(protected __CLASS__Service $__VARIABLE__Service)
+    {
+    }
+
+    protected function service(): object
+    {
+        return $this->__VARIABLE__Service;
+    }
+
+    protected function viewName(): string
+    {
+        return 'pages.__KEBAB_PLURAL__.index';
+    }
+
+    protected function storeRequestClass(): string
+    {
+        return Store__CLASS__Request::class;
+    }
+
+    protected function updateRequestClass(): string
+    {
+        return Update__CLASS__Request::class;
+    }
+
+    protected function messages(): array
+    {
+        return [
+            'created' => '__CLASS__ berhasil ditambahkan.',
+            'updated' => '__CLASS__ berhasil diperbarui.',
+            'deleted' => '__CLASS__ berhasil dihapus.',
+        ];
+    }
+}

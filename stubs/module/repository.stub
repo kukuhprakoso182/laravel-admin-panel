@@ -1,0 +1,14 @@
+<?php
+
+namespace App\Repositories;
+
+use App\Models\__CLASS__;
+use App\Repositories\Contracts\__CLASS__RepositoryInterface;
+
+class __CLASS__Repository extends BaseRepository implements __CLASS__RepositoryInterface
+{
+    public function __construct(__CLASS__ $model)
+    {
+        parent::__construct($model);
+    }
+}

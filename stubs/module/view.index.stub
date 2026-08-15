@@ -1,0 +1,18 @@
+<x-layouts.app title="__CLASS__ Management">
+
+    <div data-module="__MODULE_KEY__" x-data="__ALPINE_FN__()" x-init="init()">
+
+        <x-molecules.table-toolbar
+            menu="__KEBAB_PLURAL__.index"
+            create-fn="openCreate()"
+            create-label="Tambah __CLASS__"
+            search-placeholder="Cari __VARIABLE__..."
+            on-search="filters.page = 1; fetchData()"
+        />
+
+        @include('pages.__KEBAB_PLURAL__.partials.table')
+
+        @include('pages.__KEBAB_PLURAL__.partials.form-modal')
+
+    </div>
+</x-layouts.app>

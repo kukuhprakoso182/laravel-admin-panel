@@ -1,0 +1,9 @@
+<?php
+
+namespace App\Repositories\Contracts;
+
+interface __CLASS__RepositoryInterface extends BaseRepositoryInterface
+{
+    // Tambahkan method khusus __CLASS__ di sini kalau perlu,
+    // misal: public function allOrderedByName();
+}

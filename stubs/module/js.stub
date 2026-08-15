@@ -1,0 +1,80 @@
+window.__ALPINE_FN__ = function () {
+    return {
+        __VARIABLE_PLURAL__: [],
+        meta: {},
+        loading: false,
+        submitting: false,
+        showFormModal: false,
+        isEdit: false,
+        errors: {},
+        filters: { search: '', page: 1 },
+        form: { id: null, name: '' },
+
+        init() {
+            this.fetchData();
+        },
+
+        fetchData() {
+            this.loading = true;
+            const params = formatUtils.buildQueryParams(this.filters);
+
+            fetch(`/__KEBAB_PLURAL__/data?${params}`, { headers: { 'Accept': 'application/json' } })
+                .then(res => res.json())
+                .then(data => {
+                    const { items, meta } = tableUtils.normalizePaginated(data);
+                    this.__VARIABLE_PLURAL__ = items;
+                    this.meta = meta;
+                })
+                .catch((err) => {
+                    console.error('fetchData error:', err);
+                    window.alertError('Gagal memuat data __VARIABLE__.');
+                })
+                .finally(() => this.loading = false);
+        },
+
+        openCreate() {
+            this.isEdit = false;
+            this.errors = {};
+            this.form = { id: null, name: '' };
+            this.showFormModal = true;
+        },
+
+        openEdit(__VARIABLE__) {
+            this.isEdit = true;
+            this.errors = {};
+            this.form = { id: __VARIABLE__.id, name: __VARIABLE__.name };
+            this.showFormModal = true;
+        },
+
+        async submitForm() {
+            this.submitting = true;
+            this.errors = {};
+
+            const url = this.isEdit ? `/__KEBAB_PLURAL__/${this.form.id}` : '/__KEBAB_PLURAL__';
+            const method = this.isEdit ? 'PUT' : 'POST';
+
+            try {
+                const result = await apiUtils.apiFetch(url, {
+                    method,
+                    body: JSON.stringify({
+                        name: this.form.name,
+                    }),
+                });
+
+                if (result.validationError) {
+                    this.errors = result.errors;
+                    window.alertError(result.message);
+                    return;
+                }
+
+                this.showFormModal = false;
+                window.alertSuccess(result.data?.message || (this.isEdit ? '__CLASS__ berhasil diperbarui.' : '__CLASS__ berhasil ditambahkan.'));
+                this.fetchData();
+            } catch (err) {
+                window.alertError(err.message || 'Gagal menyimpan data.');
+            } finally {
+                this.submitting = false;
+            }
+        },
+    };
+};
