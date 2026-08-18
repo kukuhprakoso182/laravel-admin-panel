@@ -1,0 +1,150 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Models\__CLASS__;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Concerns\InteractsWithPermissions;
+use Tests\TestCase;
+
+/**
+ * Feature test untuk module __CLASS__.
+ *
+ * Menu alias di bawah ('__KEBAB_PLURAL__.index') HARUS SAMA dengan link_alias
+ * yang didaftarkan di database/seeders/MenuSeeder.php untuk module ini.
+ */
+class __CLASS_PLURAL__Test extends TestCase
+{
+    use RefreshDatabase, InteractsWithPermissions;
+
+    protected string $menuAlias = '__KEBAB_PLURAL__.index';
+
+    public function test_guest_tidak_bisa_akses_index(): void
+    {
+        $response = $this->get(route('__KEBAB_PLURAL__.index'));
+
+        $response->assertRedirect(route('login'));
+    }
+
+    public function test_user_tanpa_permission_ditolak_403(): void
+    {
+        $this->loginWithoutPermissions();
+
+        $response = $this->get(route('__KEBAB_PLURAL__.data'));
+
+        $response->assertForbidden();
+    }
+
+    public function test_user_dengan_permission_view_bisa_lihat_index(): void
+    {
+        $this->loginWithPermissions($this->menuAlias, ['view']);
+
+        $response = $this->get(route('__KEBAB_PLURAL__.index'));
+
+        $response->assertOk();
+    }
+
+    public function test_data_table_mengembalikan_data_dan_meta(): void
+    {
+        $this->loginWithPermissions($this->menuAlias, ['view']);
+
+        __CLASS__::factory()->count(3)->create();
+
+        $response = $this->getJson(route('__KEBAB_PLURAL__.data'));
+
+        $response->assertOk()
+            ->assertJsonStructure([
+                'data',
+                'meta' => ['current_page', 'last_page', 'total', 'per_page'],
+            ])
+            ->assertJsonCount(3, 'data');
+    }
+
+    public function test_search_memfilter_data(): void
+    {
+        $this->loginWithPermissions($this->menuAlias, ['view']);
+
+        __CLASS__::factory()->create(['name' => 'Findme Unique']);
+        __CLASS__::factory()->create(['name' => 'Lainnya']);
+
+        $response = $this->getJson(route('__KEBAB_PLURAL__.data', ['search' => 'Findme']));
+
+        $response->assertOk()->assertJsonCount(1, 'data');
+    }
+
+    public function test_user_dengan_permission_create_bisa_menyimpan_data(): void
+    {
+        $this->loginWithPermissions($this->menuAlias, ['create']);
+
+        $response = $this->postJson(route('__KEBAB_PLURAL__.store'), [
+            'name' => 'Data Baru',
+        ]);
+
+        $response->assertCreated();
+
+        $this->assertDatabaseHas('__TABLE__', ['name' => 'Data Baru']);
+    }
+
+    public function test_user_tanpa_permission_create_ditolak(): void
+    {
+        $this->loginWithoutPermissions();
+
+        $response = $this->postJson(route('__KEBAB_PLURAL__.store'), [
+            'name' => 'Data Baru',
+        ]);
+
+        $response->assertForbidden();
+    }
+
+    public function test_store_gagal_validasi_kalau_name_kosong(): void
+    {
+        $this->loginWithPermissions($this->menuAlias, ['create']);
+
+        $response = $this->postJson(route('__KEBAB_PLURAL__.store'), [
+            'name' => '',
+        ]);
+
+        $response->assertUnprocessable()->assertJsonValidationErrors('name');
+    }
+
+    public function test_user_dengan_permission_edit_bisa_update_data(): void
+    {
+        $this->loginWithPermissions($this->menuAlias, ['edit']);
+
+        $__VARIABLE__ = __CLASS__::factory()->create(['name' => 'Lama']);
+
+        $response = $this->putJson(route('__KEBAB_PLURAL__.update', $__VARIABLE__->id), [
+            'name' => 'Baru',
+        ]);
+
+        $response->assertOk();
+
+        $this->assertDatabaseHas('__TABLE__', ['id' => $__VARIABLE__->id, 'name' => 'Baru']);
+    }
+
+    public function test_user_dengan_permission_delete_bisa_menghapus_data(): void
+    {
+        $this->loginWithPermissions($this->menuAlias, ['delete']);
+
+        $__VARIABLE__ = __CLASS__::factory()->create();
+
+        $response = $this->deleteJson(route('__KEBAB_PLURAL__.destroy', $__VARIABLE__->id));
+
+        $response->assertOk();
+
+        $this->assertDatabaseMissing('__TABLE__', ['id' => $__VARIABLE__->id]);
+    }
+
+    public function test_user_tanpa_permission_delete_ditolak(): void
+    {
+        $this->loginWithoutPermissions();
+
+        $__VARIABLE__ = __CLASS__::factory()->create();
+
+        $response = $this->deleteJson(route('__KEBAB_PLURAL__.destroy', $__VARIABLE__->id));
+
+        $response->assertForbidden();
+
+        $this->assertDatabaseHas('__TABLE__', ['id' => $__VARIABLE__->id]);
+    }
+}

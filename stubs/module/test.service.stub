@@ -1,0 +1,80 @@
+<?php
+
+namespace Tests\Unit;
+
+use App\Models\__CLASS__;
+use App\Repositories\__CLASS__Repository;
+use App\Services\__CLASS__Service;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Request;
+use Tests\TestCase;
+
+class __CLASS__ServiceTest extends TestCase
+{
+    use RefreshDatabase;
+
+    protected __CLASS__Service $service;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->service = new __CLASS__Service(new __CLASS__Repository(new __CLASS__()));
+    }
+
+    public function test_create_menyimpan_data_baru(): void
+    {
+        $__VARIABLE__ = $this->service->create(['name' => 'Contoh']);
+
+        $this->assertDatabaseHas('__TABLE__', ['id' => $__VARIABLE__->id, 'name' => 'Contoh']);
+    }
+
+    public function test_update_mengubah_data(): void
+    {
+        $__VARIABLE__ = __CLASS__::factory()->create(['name' => 'Lama']);
+
+        $this->service->update($__VARIABLE__->id, ['name' => 'Baru']);
+
+        $this->assertDatabaseHas('__TABLE__', ['id' => $__VARIABLE__->id, 'name' => 'Baru']);
+    }
+
+    public function test_delete_menghapus_data(): void
+    {
+        $__VARIABLE__ = __CLASS__::factory()->create();
+
+        $result = $this->service->delete($__VARIABLE__->id);
+
+        $this->assertTrue($result);
+        $this->assertDatabaseMissing('__TABLE__', ['id' => $__VARIABLE__->id]);
+    }
+
+    public function test_find_mengembalikan_data_yang_benar(): void
+    {
+        $__VARIABLE__ = __CLASS__::factory()->create();
+
+        $found = $this->service->find($__VARIABLE__->id);
+
+        $this->assertEquals($__VARIABLE__->id, $found->id);
+    }
+
+    public function test_table_mengembalikan_data_terformat_dan_meta(): void
+    {
+        __CLASS__::factory()->count(2)->create();
+
+        $result = $this->service->table(Request::create('/__KEBAB_PLURAL__/data', 'GET'));
+
+        $this->assertArrayHasKey('data', $result);
+        $this->assertArrayHasKey('meta', $result);
+        $this->assertCount(2, $result['data']);
+    }
+
+    public function test_table_mendukung_search(): void
+    {
+        __CLASS__::factory()->create(['name' => 'Findme Unique']);
+        __CLASS__::factory()->create(['name' => 'Lainnya']);
+
+        $result = $this->service->table(Request::create('/__KEBAB_PLURAL__/data', 'GET', ['search' => 'Findme']));
+
+        $this->assertCount(1, $result['data']);
+    }
+}

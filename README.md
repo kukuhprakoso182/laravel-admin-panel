@@ -382,3 +382,44 @@ Semua template ada di `stubs/module/*.stub`. Placeholder:
 | `__KEBAB_PLURAL__`       | `icons`               | `product-categories`                  |
 | `__MODULE_KEY__`         | `icon-management`     | `product-category-management`         |
 | `__ALPINE_FN__`          | `iconManagement`      | `productCategoryManagement`           |
+
+## Testing (baru)
+
+Secara default, `make:module` sekarang juga generate test PHPUnit:
+
+```
+tests/Concerns/InteractsWithPermissions.php   (dibuat sekali, dipakai semua module)
+tests/Feature/{ClassPlural}Test.php
+tests/Unit/{Class}ServiceTest.php
+tests/Unit/{Class}RepositoryTest.php
+database/factories/{Class}Factory.php
+```
+
+Nonaktifkan dengan `--no-tests` (dan `--no-model` juga skip Factory karena butuh Model).
+
+### PENTING sebelum test bisa jalan
+
+`tests/Concerns/InteractsWithPermissions.php` **berasumsi** nama model & kolom
+berikut — cek dan sesuaikan sekali saja di file itu kalau beda di project kamu:
+
+- `App\Models\Role` (kolom `name`), `App\Models\Menu` (kolom `link_alias`),
+  `App\Models\Permission` (kolom `name`), `App\Models\RoleMenuPermission`
+  (kolom `role_id`, `menu_id`, `permission_id`), `App\Models\User` (kolom
+  `role_id`, `status`).
+- Model-model itu juga harus punya Factory (`Role::factory()`,
+  `Menu::factory()`, `User::factory()`) — kalau belum ada, buat dulu.
+
+Setelah itu, jalankan test module tertentu:
+
+```bash
+php artisan test --filter=IconsTest
+php artisan test --filter=IconServiceTest
+php artisan test --filter=IconRepositoryTest
+```
+
+Test Feature yang digenerate mengecek: guest ditolak, user tanpa permission
+dapat 403, user dengan permission bisa index/data/store/update/destroy,
+search berfungsi, dan validasi gagal saat `name` kosong. Test Unit mengecek
+Service & Repository langsung tanpa lewat HTTP layer. Field default yang
+dites cuma `name` — tambahkan assertion untuk field lain sesuai model asli
+kamu.

@@ -11,12 +11,14 @@ class MakeModule extends Command
     /**
      * php artisan make:module Icon
      * php artisan make:module ProductCategory --force
+     * php artisan make:module ProductCategory --no-tests
      */
     protected $signature = 'make:module {name : Nama module singular, misal: Icon atau ProductCategory}
                             {--force : Timpa file yang sudah ada}
-                            {--no-model : Jangan generate Model}';
+                            {--no-model : Jangan generate Model & Factory}
+                            {--no-tests : Jangan generate Feature/Unit test}';
 
-    protected $description = 'Membuat module CRUD baru: Controller, Service, Repository, FormRequest, View (Alpine.js), dan JS';
+    protected $description = 'Membuat module CRUD baru: Controller, Service, Repository, FormRequest, View (Alpine.js), JS, dan Test';
 
     protected string $stubPath;
 
@@ -36,6 +38,7 @@ class MakeModule extends Command
         $kebabPlural  = Str::kebab($classPlural);                     // icons | product-categories
         $moduleKey    = $kebab . '-management';                       // icon-management | product-category-management
         $alpineFn     = $variable . 'Management';                     // iconManagement | productCategoryManagement
+        $table        = Str::snake($classPlural);                     // icons | product_categories
 
         $replacements = [
             '__CLASS__'          => $class,
@@ -46,6 +49,7 @@ class MakeModule extends Command
             '__KEBAB_PLURAL__'   => $kebabPlural,
             '__MODULE_KEY__'     => $moduleKey,
             '__ALPINE_FN__'      => $alpineFn,
+            '__TABLE__'          => $table,
         ];
 
         if (! File::exists($this->stubPath)) {
@@ -101,6 +105,30 @@ class MakeModule extends Command
                 'stub'   => 'model.stub',
                 'target' => app_path("Models/{$class}.php"),
             ];
+            $targets[] = [
+                'stub'   => 'factory.stub',
+                'target' => database_path("factories/{$class}Factory.php"),
+            ];
+        }
+
+        if (! $this->option('no-tests')) {
+            // Trait helper permission dipakai bareng oleh semua module — dibuat sekali.
+            $targets[] = [
+                'stub'   => 'test.permissions-trait.stub',
+                'target' => base_path('tests/Concerns/InteractsWithPermissions.php'),
+            ];
+            $targets[] = [
+                'stub'   => 'test.feature.stub',
+                'target' => base_path("tests/Feature/{$classPlural}Test.php"),
+            ];
+            $targets[] = [
+                'stub'   => 'test.service.stub',
+                'target' => base_path("tests/Unit/{$class}ServiceTest.php"),
+            ];
+            $targets[] = [
+                'stub'   => 'test.repository.stub',
+                'target' => base_path("tests/Unit/{$class}RepositoryTest.php"),
+            ];
         }
 
         foreach ($targets as $item) {
@@ -112,7 +140,7 @@ class MakeModule extends Command
         $this->newLine();
         $this->warn('Langkah manual yang masih perlu dilakukan:');
 
-        $this->line("1. Pastikan migration untuk tabel sudah ada & dijalankan (kolom minimal: name).");
+        $this->line("1. Pastikan migration untuk tabel '{$table}' sudah ada & dijalankan (kolom minimal: name).");
 
         $this->line("2. Bind interface ke repository di App\\Providers\\AppServiceProvider::register():");
         $this->line("   \$this->app->bind(");
@@ -120,20 +148,29 @@ class MakeModule extends Command
         $this->line("       \\App\\Repositories\\{$class}Repository::class");
         $this->line("   );");
 
-        $this->line("3. Tambahkan route di routes/web.php:");
+        $this->line("3. Tambahkan route di routes/web.php (bungkus middleware permission!):");
         $this->line("   Route::prefix('{$kebabPlural}')->name('{$kebabPlural}.')->group(function () {");
-        $this->line("       Route::get('/', [{$class}Controller::class, 'index'])->name('index');");
-        $this->line("       Route::get('/data', [{$class}Controller::class, 'data'])->name('data');");
-        $this->line("       Route::post('/', [{$class}Controller::class, 'store'])->name('store');");
-        $this->line("       Route::get('/{id}', [{$class}Controller::class, 'show'])->name('show');");
-        $this->line("       Route::put('/{id}', [{$class}Controller::class, 'update'])->name('update');");
-        $this->line("       Route::delete('/{id}', [{$class}Controller::class, 'destroy'])->name('destroy');");
+        $this->line("       Route::middleware('permission:view,{$kebabPlural}.index')->get('/', [{$class}Controller::class, 'index'])->name('index');");
+        $this->line("       Route::middleware('permission:view,{$kebabPlural}.index')->get('/data', [{$class}Controller::class, 'data'])->name('data');");
+        $this->line("       Route::middleware('permission:create,{$kebabPlural}.index')->post('/', [{$class}Controller::class, 'store'])->name('store');");
+        $this->line("       Route::middleware('permission:view,{$kebabPlural}.index')->get('/{id}', [{$class}Controller::class, 'show'])->name('show');");
+        $this->line("       Route::middleware('permission:edit,{$kebabPlural}.index')->put('/{id}', [{$class}Controller::class, 'update'])->name('update');");
+        $this->line("       Route::middleware('permission:delete,{$kebabPlural}.index')->delete('/{id}', [{$class}Controller::class, 'destroy'])->name('destroy');");
         $this->line("   });");
 
-        $this->line("4. Daftarkan module JS di resources/js/alpine-loader.js, tambahkan baris:");
+        $this->line("4. Daftarkan module JS di resources/js/alpine-loader.js:");
         $this->line("   '{$moduleKey}': () => import('./pages/{$moduleKey}.js'),");
 
-        $this->line("5. Sesuaikan kolom form/table di stub hasil generate (saat ini cuma field 'name' sebagai contoh, tambahkan field lain sesuai model kamu di service, form-request, view, dan js).");
+        $this->line("5. Tambahkan menu di database/seeders/MenuSeeder.php dengan link_alias PERSIS '{$kebabPlural}.index',");
+        $this->line("   lalu mapping izin role-nya di RoleMenuPermissionSeeder.php.");
+
+        if (! $this->option('no-tests')) {
+            $this->line("6. Cek tests/Concerns/InteractsWithPermissions.php — sesuaikan nama model/kolom Role/Menu/Permission");
+            $this->line("   kalau berbeda dari asumsi (lihat komentar di file tsb), lalu jalankan:");
+            $this->line("   php artisan test --filter={$classPlural}Test");
+        }
+
+        $this->line("7. Field default cuma 'name' — sesuaikan di Request, Service, View, JS, dan Test sesuai kolom asli model kamu.");
 
         return self::SUCCESS;
     }

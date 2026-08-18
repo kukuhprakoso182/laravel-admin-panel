@@ -1,0 +1,21 @@
+<?php
+
+namespace Database\Factories;
+
+use App\Models\__CLASS__;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+/**
+ * @extends Factory<__CLASS__>
+ */
+class __CLASS__Factory extends Factory
+{
+    protected $model = __CLASS__::class;
+
+    public function definition(): array
+    {
+        return [
+            'name' => fake()->words(2, true),
+        ];
+    }
+}

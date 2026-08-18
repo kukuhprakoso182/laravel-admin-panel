@@ -1,0 +1,74 @@
+<?php
+
+namespace Tests\Unit;
+
+use App\Models\__CLASS__;
+use App\Repositories\__CLASS__Repository;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Request;
+use Tests\TestCase;
+
+class __CLASS__RepositoryTest extends TestCase
+{
+    use RefreshDatabase;
+
+    protected __CLASS__Repository $repository;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->repository = new __CLASS__Repository(new __CLASS__());
+    }
+
+    public function test_create_menyimpan_data(): void
+    {
+        $__VARIABLE__ = $this->repository->create(['name' => 'Contoh']);
+
+        $this->assertDatabaseHas('__TABLE__', ['id' => $__VARIABLE__->id]);
+    }
+
+    public function test_find_melempar_exception_kalau_tidak_ada(): void
+    {
+        $this->expectException(ModelNotFoundException::class);
+
+        $this->repository->find(99999);
+    }
+
+    public function test_update_mengubah_data(): void
+    {
+        $__VARIABLE__ = __CLASS__::factory()->create(['name' => 'Lama']);
+
+        $updated = $this->repository->update($__VARIABLE__->id, ['name' => 'Baru']);
+
+        $this->assertEquals('Baru', $updated->name);
+    }
+
+    public function test_delete_menghapus_data(): void
+    {
+        $__VARIABLE__ = __CLASS__::factory()->create();
+
+        $this->assertTrue($this->repository->delete($__VARIABLE__->id));
+        $this->assertDatabaseMissing('__TABLE__', ['id' => $__VARIABLE__->id]);
+    }
+
+    public function test_paginate_filtered_mendukung_search_dan_sort(): void
+    {
+        __CLASS__::factory()->create(['name' => 'Zebra']);
+        __CLASS__::factory()->create(['name' => 'Apple']);
+
+        $request = Request::create('/__KEBAB_PLURAL__/data', 'GET', [
+            'sort' => 'name',
+            'direction' => 'asc',
+        ]);
+
+        $result = $this->repository->paginateFiltered(
+            request: $request,
+            searchableColumns: ['name'],
+            sortableColumns: ['name'],
+        );
+
+        $this->assertEquals('Apple', $result->items()[0]->name);
+    }
+}

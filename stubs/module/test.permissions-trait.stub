@@ -1,0 +1,80 @@
+<?php
+
+namespace Tests\Concerns;
+
+use App\Models\Menu;
+use App\Models\Permission;
+use App\Models\Role;
+use App\Models\RoleMenuPermission;
+use App\Models\User;
+
+/**
+ * Helper untuk Feature test yang butuh user dengan permission tertentu,
+ * sesuai sistem role + menu + permission project ini (lihat README bagian
+ * "Sistem Permission").
+ *
+ * ASUMSI NAMA MODEL & KOLOM (sesuaikan kalau beda di project kamu):
+ * - App\Models\Role               kolom: name
+ * - App\Models\Menu                kolom: link_alias
+ * - App\Models\Permission          kolom: name  (view|create|edit|delete|export)
+ * - App\Models\RoleMenuPermission  kolom: role_id, menu_id, permission_id
+ * - App\Models\User                kolom: role_id, status ('active' = aktif),
+ *                                   relasi role()
+ *
+ * Kalau relasi/nama kolom berbeda, cukup ubah method di file ini —
+ * semua test module lain otomatis ikut terupdate karena pakai trait ini.
+ */
+trait InteractsWithPermissions
+{
+    /**
+     * Buat & login sebagai user yang punya permission tertentu untuk satu menu.
+     *
+     * @param  string  $menuAlias  Harus PERSIS SAMA dengan `link_alias` di tabel
+     *                             menus, mis. 'icons.index'. Kalau tidak match,
+     *                             MenuAliasResolver tidak akan resolve menu-nya
+     *                             dan request akan tetap 403.
+     * @param  array<string>  $actions  mis. ['view', 'create', 'edit', 'delete']
+     */
+    protected function loginWithPermissions(string $menuAlias, array $actions = ['view']): User
+    {
+        $role = Role::factory()->create();
+        $menu = Menu::factory()->create(['link_alias' => $menuAlias]);
+
+        foreach ($actions as $action) {
+            $permission = Permission::firstOrCreate(['name' => $action]);
+
+            RoleMenuPermission::create([
+                'role_id' => $role->id,
+                'menu_id' => $menu->id,
+                'permission_id' => $permission->id,
+            ]);
+        }
+
+        $user = User::factory()->create([
+            'role_id' => $role->id,
+            'status' => 'active',
+        ]);
+
+        $this->actingAs($user);
+
+        return $user;
+    }
+
+    /**
+     * Buat & login sebagai user yang aktif tapi TANPA permission apapun —
+     * dipakai untuk assert 403.
+     */
+    protected function loginWithoutPermissions(): User
+    {
+        $role = Role::factory()->create();
+
+        $user = User::factory()->create([
+            'role_id' => $role->id,
+            'status' => 'active',
+        ]);
+
+        $this->actingAs($user);
+
+        return $user;
+    }
+}
