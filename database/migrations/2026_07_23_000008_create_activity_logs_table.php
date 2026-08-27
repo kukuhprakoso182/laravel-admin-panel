@@ -19,8 +19,8 @@ return new class extends Migration
                 ->restrictOnDelete();
 
             $table->string('event'); // login, logout, login_failed, created, updated, deleted
-            $table->string('subject_type')->nullable(); // contoh: App\Models\User
-            $table->string('subject_id')->nullable();
+            $table->string('subject_type', 100)->nullable();
+            $table->string('subject_id', 36)->nullable();
             $table->string('description')->nullable();
             $table->json('properties')->nullable(); // {"old": {...}, "new": {...}}
             $table->string('ip_address', 45)->nullable();
