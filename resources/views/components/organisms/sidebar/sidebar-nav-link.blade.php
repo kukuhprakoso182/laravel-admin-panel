@@ -6,10 +6,10 @@
 
 <a href="{{ $href }}"
    {{ $attributes->merge(['class' =>
-        'flex items-center justify-between gap-x-3 px-1 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ' .
+        'flex items-center justify-between gap-x-3 px-1 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer my-2 ' .
         ($active
-            ? 'bg-white text-teal-600 shadow-md'
-            : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900')
+            ? 'bg-teal-600 text-white shadow-md'
+            : 'text-gray-800 hover:bg-gray-200 hover:shadow-md hover:text-gray-900')
    ]) }}
 >
     <span class="flex items-center gap-x-3">
