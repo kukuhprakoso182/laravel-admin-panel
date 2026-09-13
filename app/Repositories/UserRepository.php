@@ -28,23 +28,6 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         return $user->load('roles');
     }
 
-    public function syncMenuPermissions(int|string $roleId, array $menuPermissionPairs)
-    {
-        $role = $this->find($roleId);
-        $role->roleMenuPermissions()->delete();
-
-        foreach ($menuPermissionPairs as $pair) {
-            $role->roleMenuPermissions()->create([
-                'menu_id' => $pair['menu_id'],
-                'permission_id' => $pair['permission_id'],
-            ]);
-        }
-
-        app(\App\Services\SidebarService::class)->clearAll();
-
-        return $role->load('roleMenuPermissions.menu', 'roleMenuPermissions.permission');
-    }
-
     public function paginateFiltered(
         Request $request,
         array $searchableColumns = [],

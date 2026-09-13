@@ -9,7 +9,6 @@ interface UserRepositoryInterface extends BaseRepositoryInterface
 {
     public function syncRoles(int|string $userId, array $roleIds);
 
-    public function syncMenuPermissions(int|string $roleId, array $menuPermissionPairs);
     public function countTotal(): int;
 
     public function countCreatedBetween(DateTimeInterface $start, DateTimeInterface $end): int;
