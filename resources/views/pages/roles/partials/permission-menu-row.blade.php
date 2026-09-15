@@ -3,16 +3,19 @@
     $maxDepth = $maxDepth ?? 6;
 @endphp
 
-<div class="contents">
-    <div class="contents hover:bg-gray-50">
-        <div class="py-2 pr-3 border-b border-gray-50" style="padding-left: {{ $depth * 20 }}px">
+<div class="contents group">
+    <div class="contents">
+        <div
+            class="py-2 pr-3 border-b border-gray-50 sticky left-0 z-[5] bg-white group-hover:bg-gray-50"
+            style="padding-left: {{ $depth * 20 }}px"
+        >
             <div class="flex items-center gap-x-1.5">
                 <i class="ri-lg text-gray-400" :class="node.icon?.value || 'ri-file-line'"></i>
-                <span class="text-gray-700" x-text="node.name"></span>
+                <span class="text-gray-700 whitespace-nowrap" x-text="node.name"></span>
             </div>
         </div>
         <template x-for="perm in permissions" :key="perm.id">
-            <div class="py-2 px-2 text-center border-b border-gray-50">
+            <div class="py-2 px-2 text-center border-b border-l border-gray-50 group-hover:bg-gray-50">
                 <input type="checkbox"
                     :checked="isChecked(node.id, perm.id)"
                     @change="togglePermission(node.id, perm.id)"
