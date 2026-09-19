@@ -45,7 +45,24 @@
     }
 @endphp
 
-<nav x-data="{ openMenu: @js($initialOpenId) }" class="flex-1 overflow-y-auto px-3 py-4 space-y-6">
+<nav
+    x-data="{
+        openMenu: @js($initialOpenId),
+
+        // Scroll container nav supaya elemen `el` berada di paling atas
+        scrollToTop(nav, el, delay = 300) {
+            setTimeout(() => {
+                const offset = el.getBoundingClientRect().top - nav.getBoundingClientRect().top;
+                nav.scrollTo({ top: nav.scrollTop + offset - 16, behavior: 'smooth' });
+            }, delay);
+        }
+    }"
+    x-init="
+        const active = $el.querySelector('[data-active=true]');
+        if (active) scrollToTop($el, active, 350);
+    "
+    class="flex-1 overflow-y-auto px-3 py-4 space-y-6"
+>
     @foreach($menu as $group)
         <x-organisms.sidebar.sidebar-group :title="$group['title']" :items="$group['items']" />
     @endforeach

@@ -6,7 +6,11 @@
 <div>
     <button
         type="button"
-        @click="openMenu = (openMenu === '{{ $id }}' ? null : '{{ $id }}')"
+        @click="
+            const opening = openMenu !== '{{ $id }}';
+            openMenu = opening ? '{{ $id }}' : null;
+            if (opening) scrollToTop($root, $el.parentElement);
+        "
         class="w-full flex items-center justify-between gap-x-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors cursor-pointer"
     >
         <span class="flex items-center gap-x-3">

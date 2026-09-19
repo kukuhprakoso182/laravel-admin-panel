@@ -5,6 +5,7 @@
 ])
 
 <a href="{{ $href }}"
+    data-active="{{ $active ? 'true' : 'false' }}"
    {{ $attributes->merge(['class' =>
         'flex items-center justify-between gap-x-3 px-1 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer my-2 ' .
         ($active
