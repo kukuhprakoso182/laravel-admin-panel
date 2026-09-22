@@ -23,13 +23,11 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request)
     {
-        $credentials = $request->validated();
-
-        if (! Auth::attempt(array_merge($credentials, ['status' => 'active']))) {
-            return back()
-                ->withErrors(['email' => 'Email, password salah, atau akun tidak aktif.'])
-                ->onlyInput('email');
-        }
+        // Sebelumnya login lewat Auth::attempt() manual di sini, sehingga
+        // rate limiting (5x percobaan gagal per email+IP) yang sudah dibuat
+        // di LoginRequest::authenticate() tidak pernah benar-benar terpakai -
+        // login bisa di-brute-force tanpa batas.
+        $request->authenticate(['status' => 'active']);
 
         $request->session()->regenerate();
 

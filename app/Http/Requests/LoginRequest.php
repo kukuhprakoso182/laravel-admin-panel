@@ -45,16 +45,22 @@ class LoginRequest extends FormRequest
     /**
      * Coba autentikasi user berdasarkan kredensial yang sudah divalidasi.
      * Dipanggil dari controller setelah $request->validated() lolos.
+     *
+     * @param  array  $extraConditions  Kondisi tambahan untuk Auth::attempt(),
+     *                                  mis. ['status' => 'active'] supaya user
+     *                                  nonaktif tetap ditolak login.
      */
-    public function authenticate(): void
+    public function authenticate(array $extraConditions = []): void
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        $credentials = array_merge($this->only('email', 'password'), $extraConditions);
+
+        if (! Auth::attempt($credentials, $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'email' => 'Email, password salah, atau akun tidak aktif.',
             ]);
         }
 
@@ -63,6 +69,7 @@ class LoginRequest extends FormRequest
 
     /**
      * Pastikan request ini belum kena rate limit (brute-force protection).
+     * Dibatasi 5 percobaan gagal per kombinasi email+IP (lihat throttleKey()).
      */
     public function ensureIsNotRateLimited(): void
     {
@@ -73,12 +80,10 @@ class LoginRequest extends FormRequest
         event(new Lockout($this));
 
         $seconds = RateLimiter::availableIn($this->throttleKey());
+        $minutes = (int) ceil($seconds / 60);
 
         throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
-                'seconds' => $seconds,
-                'minutes' => ceil($seconds / 60),
-            ]),
+            'email' => "Terlalu banyak percobaan login. Coba lagi dalam {$minutes} menit.",
         ]);
     }
 

@@ -36,7 +36,7 @@
                 @method('PATCH')
 
                 <div>
-                    <x-atoms.input type="password" name="current_password" label="Password Saat Ini" value="Password Saat Ini" />
+                    <x-atoms.input type="password" name="current_password" label="Password Saat Ini" />
                 </div>
 
                 <div>
