@@ -10,13 +10,6 @@
     empty-text="Tidak ada data role."
     show-number
 >
-    <x-slot:bulkActions>
-        <x-atoms.button color="red" variant="outline" @click="bulkDelete()" x-bind:disabled="submitting">
-            <i class="ri-delete-bin-line"></i>
-            Hapus Terpilih
-        </x-atoms.button>
-    </x-slot:bulkActions>
-
     <x-slot:cell_name>
         <span class="font-medium text-gray-900" x-text="row.name"></span>
     </x-slot:cell_name>
@@ -48,7 +41,7 @@
             edit-fn="openEdit(row)"
             delete-label="row.name"
             delete-url="`/roles/${row.id}`"
-            on-delete-success="selected = selected.filter(id => id !== row.id); fetchData();"
+            on-delete-success="fetchData();"
         />
     </x-slot:actions>
 </x-molecules.data-table>

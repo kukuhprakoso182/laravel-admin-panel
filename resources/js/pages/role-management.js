@@ -3,7 +3,6 @@ window.roleManagement = function () {
         roles: [],
         meta: {},
         loading: false,
-        selected: [],
         submitting: false,
         showFormModal: false,
         isEdit: false,
