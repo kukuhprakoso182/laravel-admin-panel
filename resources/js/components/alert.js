@@ -59,7 +59,7 @@ class AlertManager {
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5 shrink-0 mt-0.5 ${config.icon}">
                 <path fill-rule="evenodd" d="${config.iconPath}" clip-rule="evenodd" />
             </svg>
-            <div class="flex-1 text-sm">${message}</div>
+            <div class="flex-1 min-w-0 text-sm wrap-break-word">${message}</div>
             <button type="button" class="js-alert-close shrink-0 cursor-pointer opacity-60 hover:opacity-100" data-alert-close="${id}">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4">
                     <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
