@@ -10,6 +10,12 @@
         <x-atoms.input type="email" name="email" label="Email" />
         <x-atoms.input type="password" name="password" label="Password" />
 
+        <div class="text-right -mt-1">
+            <a href="{{ route('password.request') }}" class="text-sm text-teal-600 hover:underline">
+                Lupa password?
+            </a>
+        </div>
+
         <x-atoms.button
             type="submit"
             color="teal"
