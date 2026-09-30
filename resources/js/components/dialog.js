@@ -3,6 +3,7 @@ class DialogManager {
         this.DIALOG_BASIC = "DIALOG_BASIC";
         this.DIALOG_CONFIRM = "DIALOG_CONFIRM";
         this.sectionDialogId = 'section_dialog';
+        this.closeDuration = 200; // samakan dengan durasi transition di CSS
 
         this.colorMap = {
             slate: {
@@ -26,6 +27,55 @@ class DialogManager {
         this.init();
     }
 
+    /* ------------------------------------------------------------------ */
+    /* Keamanan: escaping & validasi                                       */
+    /* ------------------------------------------------------------------ */
+
+    static escapeHtml(value) {
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    // Tandai string HTML sebagai tepercaya. HANYA pakai untuk HTML yang
+    // seluruh bagian dinamisnya sudah di-escape (lihat confirmDeleteDialog).
+    static trusted(html) {
+        return { __html: String(html ?? '') };
+    }
+
+    // Default: escape. HTML hanya lolos jika dibungkus DialogManager.trusted().
+    renderText(value) {
+        if (value && typeof value === 'object' && '__html' in value) {
+            return value.__html;
+        }
+        return DialogManager.escapeHtml(value);
+    }
+
+    // Batasi redirect ke same-origin (cegah open redirect & URL javascript:)
+    static safeRedirect(url) {
+        try {
+            const parsed = new URL(url, window.location.origin);
+            const isHttp = parsed.protocol === 'http:' || parsed.protocol === 'https:';
+            return isHttp && parsed.origin === window.location.origin ? parsed.href : null;
+        } catch {
+            return null;
+        }
+    }
+
+    static csrfHeaders() {
+        return {
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content ?? '',
+        };
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Inisialisasi                                                        */
+    /* ------------------------------------------------------------------ */
+
     init() {
         this.ensureSectionDialog();
 
@@ -47,14 +97,18 @@ class DialogManager {
         return section;
     }
 
-    generateDialog(type, title, message, actionText = '', bgAction = 'slate', callbackAction = null) {
-        const sectionDialog = this.ensureSectionDialog();
-        this.clearSectionDialog();
+    /* ------------------------------------------------------------------ */
+    /* Render dialog                                                       */
+    /* ------------------------------------------------------------------ */
 
+    generateDialog(type, title, message, actionText = '', bgAction = 'slate', callbackAction = null) {
         if (type !== this.DIALOG_BASIC && type !== this.DIALOG_CONFIRM) {
             console.warn('Dialog type is not defined');
             return;
         }
+
+        const sectionDialog = this.ensureSectionDialog();
+        this.clearSectionDialog();
 
         sectionDialog.innerHTML = this.buildDialogHTML(type, title, message, actionText, bgAction);
 
@@ -71,7 +125,9 @@ class DialogManager {
     }
 
     buildDialogHTML(type, title, message, actionText, bgAction) {
-        const colors = this.colorMap[bgAction] || this.colorMap.slate;
+        const colors = Object.hasOwn(this.colorMap, bgAction)
+            ? this.colorMap[bgAction]
+            : this.colorMap.slate;
         const isConfirm = type === this.DIALOG_CONFIRM;
 
         return `
@@ -85,7 +141,7 @@ class DialogManager {
                                 </svg>
                             </span>
                         ` : ''}
-                        <h3 class="text-lg font-semibold text-gray-800">${title}</h3>
+                        <h3 class="text-lg font-semibold text-gray-800">${this.renderText(title)}</h3>
                     </div>
                     <button type="button" data-dialog-close="${type}"
                             class="js-dialog-close shrink-0 cursor-pointer text-gray-400 hover:text-gray-600">
@@ -96,7 +152,7 @@ class DialogManager {
                 </div>
 
                 <div class="p-4 md:p-5">
-                    <p class="text-sm text-gray-600">${message}</p>
+                    <p class="text-sm text-gray-600">${this.renderText(message)}</p>
                 </div>
 
                 <div class="flex justify-end gap-x-2 p-4 md:p-5 border-t border-gray-200">
@@ -106,8 +162,8 @@ class DialogManager {
                     </button>
                     ${isConfirm ? `
                         <button type="button" id="confirmActionButton"
-                                class="py-2.5 px-4 text-sm font-medium rounded-lg text-white cursor-pointer transition-colors ${colors.button}">
-                            ${actionText}
+                                class="py-2.5 px-4 text-sm font-medium rounded-lg text-white cursor-pointer transition-colors disabled:opacity-60 disabled:cursor-not-allowed ${colors.button}">
+                            ${this.renderText(actionText)}
                         </button>
                     ` : ''}
                 </div>
@@ -117,12 +173,15 @@ class DialogManager {
 
     attachConfirmListener(callbackAction, type) {
         const confirmButton = document.getElementById('confirmActionButton');
-        if (confirmButton) {
-            confirmButton.addEventListener('click', () => {
-                callbackAction();
-                this.closeDialog(type);
-            });
-        }
+        if (!confirmButton) return;
+
+        confirmButton.addEventListener('click', () => {
+            if (confirmButton.disabled) return; // cegah klik ganda
+            confirmButton.disabled = true;
+
+            callbackAction();
+            this.closeDialog(type);
+        });
     }
 
     attachCommonListeners(type) {
@@ -139,12 +198,17 @@ class DialogManager {
             if (e.target === dialog) this.closeDialog(type);
         });
 
-        // Trigger transisi masuk (lihat CSS di injectStyles)
+        // Trigger transisi masuk (lihat CSS)
         requestAnimationFrame(() => {
+            if (!dialog.isConnected) return; // dialog sudah diganti sebelum sempat tampil
             dialog.showModal();
             requestAnimationFrame(() => dialog.classList.add('is-open'));
         });
     }
+
+    /* ------------------------------------------------------------------ */
+    /* API publik                                                          */
+    /* ------------------------------------------------------------------ */
 
     showBasicDialog(title, message) {
         this.generateDialog(this.DIALOG_BASIC, title, message);
@@ -160,9 +224,11 @@ class DialogManager {
 
         dialog.classList.remove('is-open');
         setTimeout(() => {
-            dialog.close();
-            this.clearSectionDialog();
-        }, 200); // samakan dengan durasi transition di CSS
+            if (dialog.open) dialog.close();
+            // Hapus dialog ini saja, bukan seluruh section,
+            // supaya dialog baru yang muncul di sela waktu tidak ikut terhapus.
+            dialog.remove();
+        }, this.closeDuration);
     }
 
     handleEscapeKey() {
@@ -183,50 +249,21 @@ class DialogManager {
     confirmDeleteDialog(dataDelete, deleteUrl, options = {}) {
         this.showConfirmDialog(
             'Delete',
-            `Apakah anda ingin delete data <strong>${window.escapeHtml(dataDelete)}</strong> ?`,
+            DialogManager.trusted(
+                `Apakah anda ingin delete data <strong>${DialogManager.escapeHtml(dataDelete)}</strong> ?`
+            ),
             'Delete',
             () => this.performDelete(deleteUrl, options),
             'red'
         );
     }
 
-    performDelete(deleteUrl, { redirectTo = null, onSuccess = null } = {}) {
-        fetch(deleteUrl, {
-            method: 'DELETE',
-            headers: {
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
-            },
-        })
-            .then(async (res) => {
-                if (!res.ok) {
-                    const body = await res.json().catch(() => null);
-                    const message = body?.errors
-                        ? Object.values(body.errors).flat().join(' ')
-                        : (body?.message || 'Gagal menghapus data');
-                    window.alertError(message);
-                    return; // <-- STOP di sini, jangan lanjut ke onSuccess
-                }
-
-                if (typeof onSuccess === 'function') {
-                    onSuccess();
-                } else if (redirectTo) {
-                    window.location.href = redirectTo;
-                } else {
-                    window.location.reload();
-                }
-
-                window.alertSuccess('Berhasil menghapus data');
-            })
-            .catch((err) => {
-                this.showBasicDialog('Error', err.message);
-            });
-    }
-
     confirmResetPasswordDialog(data, resetPasswordUrl, options = {}) {
         this.showConfirmDialog(
             'Reset Password',
-            `Apakah anda ingin reset password <strong>${window.escapeHtml(data)}</strong> ?`,
+            DialogManager.trusted(
+                `Apakah anda ingin reset password <strong>${DialogManager.escapeHtml(data)}</strong> ?`
+            ),
             'Reset Password',
             () => this.performAction(resetPasswordUrl, options),
             'red'
@@ -236,39 +273,71 @@ class DialogManager {
     confirmChangeStatusDialog(data, desStatusName, changeStatusUrl, options = {}) {
         this.showConfirmDialog(
             'Change Status',
-            `Apakah anda ingin ${window.escapeHtml(desStatusName)}-kan <strong>${window.escapeHtml(data)}</strong> ?`,
-            desStatusName,
+            DialogManager.trusted(
+                `Apakah anda ingin ${DialogManager.escapeHtml(desStatusName)}-kan <strong>${DialogManager.escapeHtml(data)}</strong> ?`
+            ),
+            desStatusName, // otomatis di-escape oleh renderText
             () => this.performAction(changeStatusUrl, options),
             'red'
         );
     }
 
-    // Helper generik untuk aksi non-delete (reset password, change status, dll)
-    // Default tetap redirect (GET) untuk kompatibilitas lama, tapi bisa dioverride via options
-    performAction(url, { method = null, redirectTo = null, onSuccess = null } = {}) {
-        if (!method) {
-            // Perilaku lama: redirect penuh
-            window.location.href = redirectTo || url;
+    /* ------------------------------------------------------------------ */
+    /* Eksekusi aksi (semua lewat fetch + CSRF)                            */
+    /* ------------------------------------------------------------------ */
+
+    static async extractErrorMessage(res, fallback) {
+        const body = await res.json().catch(() => null);
+        if (body?.errors) return Object.values(body.errors).flat().join(' ');
+        return body?.message || fallback;
+    }
+
+    finishRequest({ redirectTo = null, onSuccess = null } = {}) {
+        if (typeof onSuccess === 'function') {
+            onSuccess();
             return;
         }
 
-        fetch(url, {
-            method,
-            headers: {
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
-            },
-        })
-            .then((res) => {
-                if (!res.ok) throw new Error('Aksi gagal dijalankan.');
+        const target = redirectTo ? DialogManager.safeRedirect(redirectTo) : null;
+        if (target) {
+            window.location.href = target;
+        } else {
+            window.location.reload();
+        }
+    }
 
-                if (typeof onSuccess === 'function') {
-                    onSuccess();
-                } else if (redirectTo) {
-                    window.location.href = redirectTo;
-                } else {
-                    window.location.reload();
+    performDelete(deleteUrl, options = {}) {
+        fetch(deleteUrl, {
+            method: 'DELETE',
+            headers: DialogManager.csrfHeaders(),
+        })
+            .then(async (res) => {
+                if (!res.ok) {
+                    window.alertError(await DialogManager.extractErrorMessage(res, 'Gagal menghapus data'));
+                    return; // STOP, jangan lanjut ke onSuccess
                 }
+
+                this.finishRequest(options);
+                window.alertSuccess('Berhasil menghapus data');
+            })
+            .catch((err) => {
+                this.showBasicDialog('Error', err.message);
+            });
+    }
+
+    // Helper generik untuk aksi non-delete (reset password, change status, dll).
+    // Default POST + CSRF. Gunakan options.method ('PATCH', 'PUT', dst.) bila perlu.
+    // PENTING: route di server tidak boleh lagi menerima GET untuk aksi ini.
+    performAction(url, { method = 'POST', redirectTo = null, onSuccess = null } = {}) {
+        fetch(url, {
+            method: method.toUpperCase(),
+            headers: DialogManager.csrfHeaders(),
+        })
+            .then(async (res) => {
+                if (!res.ok) {
+                    throw new Error(await DialogManager.extractErrorMessage(res, 'Aksi gagal dijalankan.'));
+                }
+                this.finishRequest({ redirectTo, onSuccess });
             })
             .catch((err) => {
                 this.showBasicDialog('Error', err.message);
@@ -286,11 +355,15 @@ class DialogManager {
     }
 
     exposeToWindow() {
+        // Pastikan escapeHtml tersedia untuk file lain (tidak menimpa jika sudah ada)
+        window.escapeHtml = window.escapeHtml || DialogManager.escapeHtml;
+        window.trustedHtml = DialogManager.trusted;
+
         window.showBasicDialog = (title, message) => this.showBasicDialog(title, message);
         window.showConfirmDialog = (title, message, actionText, callbackAction, bgAction) =>
             this.showConfirmDialog(title, message, actionText, callbackAction, bgAction);
         window.closeDialog = (id) => this.closeDialog(id);
-        window.confirmLogoutDialog = (logoutUrl) => this.confirmLogoutDialog(logoutUrl);
+        window.confirmLogoutDialog = () => this.confirmLogoutDialog();
         window.confirmDeleteDialog = (dataDelete, deleteUrl, options) => this.confirmDeleteDialog(dataDelete, deleteUrl, options);
         window.confirmResetPasswordDialog = (data, resetPasswordUrl, options) => this.confirmResetPasswordDialog(data, resetPasswordUrl, options);
         window.confirmChangeStatusDialog = (data, desStatusName, changeStatusUrl, options) => this.confirmChangeStatusDialog(data, desStatusName, changeStatusUrl, options);
