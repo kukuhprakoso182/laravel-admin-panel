@@ -2,6 +2,8 @@
 
 Base project admin panel siap pakai berbasis **Laravel + Alpine.js + Tailwind CSS**. Dirancang sebagai starting point untuk membangun sistem back-office dengan CRUD, role-based permission per-menu, activity logging, dan export data — tanpa perlu setup ulang dari nol setiap kali mulai project baru.
 
+![Screenshot](docs/images/Screenshot_1.png)
+
 ## Daftar Isi
 
 - [Fitur Utama](#fitur-utama)
