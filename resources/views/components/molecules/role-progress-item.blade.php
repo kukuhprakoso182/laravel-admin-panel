@@ -3,8 +3,8 @@
 
 <div>
     <div class="flex justify-between text-sm mb-1">
-        <span class="text-gray-700">{{ $item['role'] }}</span>
-        <span class="text-gray-400">{{ $item['total'] }}</span>
+        <span class="text-ink-700">{{ $item['role'] }}</span>
+        <span class="text-ink-400">{{ $item['total'] }}</span>
     </div>
     <x-atoms.progress-bar :percentage="$item['percentage']" color="bg-purple-500" />
 </div>

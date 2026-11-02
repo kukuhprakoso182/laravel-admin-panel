@@ -13,21 +13,21 @@
 >
     <x-slot:cell_name>
         <div class="flex items-center gap-x-2">
-            <i :class="row.icon?.value" class="text-gray-500" x-show="row.icon"></i>
-            <span class="font-medium text-gray-900" x-text="row.name"></span>
+            <i :class="row.icon?.value" class="text-ink-500" x-show="row.icon"></i>
+            <span class="font-medium text-ink-900" x-text="row.name"></span>
         </div>
     </x-slot:cell_name>
 
     <x-slot:cell_parent>
-        <span class="text-gray-500" x-text="row.parent?.name || '-'"></span>
+        <span class="text-ink-500" x-text="row.parent?.name || '-'"></span>
     </x-slot:cell_parent>
 
     <x-slot:cell_link>
-        <span class="text-gray-500" x-text="row.link || '-'"></span>
+        <span class="text-ink-500" x-text="row.link || '-'"></span>
     </x-slot:cell_link>
 
     <x-slot:cell_order>
-        <span class="text-gray-500" x-text="row.order"></span>
+        <span class="text-ink-500" x-text="row.order"></span>
     </x-slot:cell_order>
 
     <x-slot:cell_is_active>

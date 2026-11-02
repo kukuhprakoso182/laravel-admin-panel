@@ -11,11 +11,11 @@
     show-number
 >
     <x-slot:cell_preview>
-        <i :class="row.value" class="ri-lg text-gray-600"></i>
+        <i :class="row.value" class="ri-lg text-ink-600"></i>
     </x-slot:cell_preview>
 
     <x-slot:cell_value>
-        <span class="font-medium text-gray-900" x-text="row.value"></span>
+        <span class="font-medium text-ink-900" x-text="row.value"></span>
     </x-slot:cell_value>
 
     <x-slot:cell_section>

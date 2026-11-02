@@ -18,7 +18,7 @@
     {{ $head }}
     @stack('styles')
 </head>
-<body {{ $attributes->merge(['class' => 'antialiased bg-gray-50 text-gray-900']) }}>
+<body {{ $attributes->merge(['class' => 'antialiased bg-surface-50 text-ink-900']) }}>
     {{ $slot }}
 
     @include('components.molecules.flash-alert')

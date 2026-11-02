@@ -5,14 +5,14 @@
     'shadow' => true,
 ])
 
-<div {{ $attributes->merge(['class' => 'flex flex-col bg-white border border-gray-200 rounded-xl ' . ($shadow ? 'shadow-sm' : '')]) }}>
+<div {{ $attributes->merge(['class' => 'flex flex-col bg-white border border-line-200 rounded-xl ' . ($shadow ? 'shadow-sm' : '')]) }}>
     @if($title || $subtitle)
-        <div class="p-4 md:p-5 border-b border-gray-200">
+        <div class="p-4 md:p-5 border-b border-line-200">
             @if($title)
-                <h3 class="text-lg font-bold text-gray-800">{{ $title }}</h3>
+                <h3 class="text-lg font-bold text-ink-800">{{ $title }}</h3>
             @endif
             @if($subtitle)
-                <p class="text-sm text-gray-500">{{ $subtitle }}</p>
+                <p class="text-sm text-ink-500">{{ $subtitle }}</p>
             @endif
         </div>
     @endif
@@ -22,7 +22,7 @@
     </div>
 
     @if($footer)
-        <div class="p-4 md:p-5 border-t border-gray-200">
+        <div class="p-4 md:p-5 border-t border-line-200">
             {{ $footer }}
         </div>
     @endif

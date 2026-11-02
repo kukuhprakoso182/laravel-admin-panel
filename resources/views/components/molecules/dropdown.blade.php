@@ -7,7 +7,7 @@
     <button
         type="button"
         x-on:click="open = !open"
-        class="inline-flex items-center gap-x-2 py-2.5 px-4 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 focus:outline-none cursor-pointer"
+        class="inline-flex items-center gap-x-2 py-2.5 px-4 text-sm font-medium rounded-lg border border-line-200 bg-white text-ink-700 hover:bg-surface-50 focus:outline-none cursor-pointer"
     >
         {{ $label }}
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
@@ -20,7 +20,7 @@
         x-show="open"
         x-transition
         x-cloak
-        {{ $attributes->merge(['class' => 'absolute z-10 mt-2 min-w-[12rem] py-1 bg-white border border-gray-200 rounded-lg shadow-md ' . ($align === 'right' ? 'right-0' : 'left-0')]) }}
+        {{ $attributes->merge(['class' => 'absolute z-10 mt-2 min-w-[12rem] py-1 bg-white border border-line-200 rounded-lg shadow-md ' . ($align === 'right' ? 'right-0' : 'left-0')]) }}
     >
         {{ $slot }}
     </div>

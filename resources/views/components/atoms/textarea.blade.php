@@ -18,11 +18,11 @@
     $oldValue = old($name, $value);
 
     $base = 'py-2.5 sm:py-3 px-4 block w-full rounded-lg sm:text-sm
-        placeholder:text-gray-400 disabled:opacity-50 disabled:pointer-events-none bg-slate-100';
+        placeholder:text-ink-400 disabled:opacity-50 disabled:pointer-events-none bg-slate-100';
 
     $state = $hasError
-        ? 'border-red-500 text-gray-900 focus:border-red-500 focus:ring-red-500'
-        : 'border-gray-200 text-gray-900 focus:border-primary-500 focus:ring-primary-500 focus:ring-1';
+        ? 'border-red-500 text-ink-900 focus:border-red-500 focus:ring-red-500'
+        : 'border-line-200 text-ink-900 focus:border-primary-500 focus:ring-primary-500 focus:ring-1';
 @endphp
 
 <div>
@@ -31,7 +31,7 @@
     @endif
 
     @if($descLabel)
-        <span class="text-xs text-gray-400 font-normal">{{ $descLabel }}</span>
+        <span class="text-xs text-ink-400 font-normal">{{ $descLabel }}</span>
     @endif
 
     <textarea
@@ -46,7 +46,7 @@
     >{{ $oldValue }}</textarea>
 
     @if($helper && !$hasError)
-        <p class="text-sm text-gray-500 mt-2">{{ $helper }}</p>
+        <p class="text-sm text-ink-500 mt-2">{{ $helper }}</p>
     @endif
 
     @if($errorsVar)

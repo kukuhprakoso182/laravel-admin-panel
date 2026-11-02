@@ -1,13 +1,13 @@
-<div class="bg-white rounded-2xl border border-gray-200 p-4">
+<div class="bg-white rounded-2xl border border-line-200 p-4">
 
     <template x-if="loadingTree">
-        <div class="flex items-center justify-center py-12 text-gray-400">
+        <div class="flex items-center justify-center py-12 text-ink-400">
             <span class="animate-spin inline-block size-5 border-2 border-primary-500 border-t-transparent rounded-full"></span>
         </div>
     </template>
 
     <template x-if="!loadingTree && treeMenus.length === 0">
-        <div class="text-center py-12 text-gray-400">Belum ada menu.</div>
+        <div class="text-center py-12 text-ink-400">Belum ada menu.</div>
     </template>
 
     <template x-if="!loadingTree && treeMenus.length > 0">

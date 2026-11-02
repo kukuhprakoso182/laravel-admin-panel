@@ -1,7 +1,7 @@
 <x-layouts.guest title="Buat Password Baru">
     <div class="mb-6 text-center">
-        <h1 class="text-xl font-semibold text-gray-800">Buat Password Baru</h1>
-        <p class="text-sm text-gray-500 mt-1">
+        <h1 class="text-xl font-semibold text-ink-800">Buat Password Baru</h1>
+        <p class="text-sm text-ink-500 mt-1">
             Silakan buat password baru untuk akun Anda.
         </p>
     </div>

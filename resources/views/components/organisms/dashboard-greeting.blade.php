@@ -11,12 +11,12 @@
     };
 @endphp
 
-<div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5 flex items-center gap-4">
+<div class="bg-white rounded-xl border border-line-100 shadow-sm p-5 flex items-center gap-4">
     <div>
-        <h1 class="text-lg font-semibold text-gray-800">
+        <h1 class="text-lg font-semibold text-ink-800">
             {{ $greeting }}, {{ $name }} 👋
         </h1>
-        <p class="text-sm text-gray-500">
+        <p class="text-sm text-ink-500">
             {{ now()->translatedFormat('l, d F Y') }}
         </p>
     </div>

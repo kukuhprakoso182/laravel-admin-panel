@@ -39,16 +39,16 @@
         if (!('sort' in {{ $filtersVar }})) {{ $filtersVar }}.sort = '{{ $defaultSort }}';
         if (!('direction' in {{ $filtersVar }})) {{ $filtersVar }}.direction = '{{ $defaultDirection }}';
     "
-    class="bg-white rounded-2xl border border-gray-200 overflow-hidden"
+    class="bg-white rounded-2xl border border-line-200 overflow-hidden"
 >
 
-    <div class="flex items-center justify-between px-5 py-3 border-b border-gray-100 text-sm text-gray-500">
+    <div class="flex items-center justify-between px-5 py-3 border-b border-line-100 text-sm text-ink-500">
         <label class="flex items-center gap-x-2">
             <span>Tampilkan</span>
             <select
                 x-model.number="{{ $perPageVar }}"
                 x-on:change="{{ $pageVar }} = 1; {{ $fetchFn }}()"
-                class="py-1.5 px-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500 cursor-pointer"
+                class="py-1.5 px-2 rounded-lg border border-line-200 text-sm focus:outline-none focus:ring-1 focus:ring-line-500 focus:border-line-500 cursor-pointer"
             >
                 @foreach($perPageOptions as $opt)
                     <option value="{{ $opt }}">{{ $opt }}</option>
@@ -65,7 +65,7 @@
                 x-bind:disabled="{{ $exportingVar }}"
             >
                 <i class="ri-download-2-line" x-show="!{{ $exportingVar }}"></i>
-                <span class="animate-spin inline-block size-4 border-2 border-gray-400 border-t-transparent rounded-full" x-show="{{ $exportingVar }}"></span>
+                <span class="animate-spin inline-block size-4 border-2 border-line-400 border-t-transparent rounded-full" x-show="{{ $exportingVar }}"></span>
                 <span x-text="{{ $exportingVar }} ? 'Mengekspor...' : '{{ $exportLabel }}'"></span>
             </x-atoms.button>
         @endif
@@ -83,9 +83,9 @@
     >
         <table class="w-full text-sm">
             <thead>
-                <tr class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                <tr class="text-left text-xs font-semibold text-ink-500 uppercase tracking-wide">
                     @if($selectable)
-                        <th class="sticky top-0 z-10 bg-white px-5 py-3 w-10 border-b border-gray-100">
+                        <th class="sticky top-0 z-10 bg-white px-5 py-3 w-10 border-b border-line-100">
                             <input type="checkbox"
                                 x-ref="selectAll{{ $selectedVar }}"
                                 :checked="{{ $rowsVar }}.length > 0 && {{ $rowsVar }}.every(r => {{ $selectedVar }}.includes(r.{{ $rowKey }}))"
@@ -98,12 +98,12 @@
                                         {{ $selectedVar }} = {{ $selectedVar }}.filter(id => !ids.includes(id));
                                     }
                                 "
-                                class="rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+                                class="rounded border-line-300 text-primary-600 focus:ring-primary-500">
                         </th>
                     @endif
 
                     @if($showNumber)
-                        <th class="sticky top-0 z-10 bg-white px-5 py-3 w-14 border-b border-gray-100">No</th>
+                        <th class="sticky top-0 z-10 bg-white px-5 py-3 w-14 border-b border-line-100">No</th>
                     @endif
 
                     @foreach($columns as $col)
@@ -112,7 +112,7 @@
                             $sortKey = $col['sortKey'] ?? $col['key'];
                             $align = ($col['align'] ?? 'left') === 'right' ? 'text-right' : '';
                         @endphp
-                        <th class="sticky top-0 z-10 bg-white px-5 py-3 border-b border-gray-100 {{ $align }} {{ $isSortable ? 'cursor-pointer select-none hover:text-gray-700' : '' }}"
+                        <th class="sticky top-0 z-10 bg-white px-5 py-3 border-b border-line-100 {{ $align }} {{ $isSortable ? 'cursor-pointer select-none hover:text-ink-700' : '' }}"
                             @if($isSortable)
                                 x-on:click="
                                     if ({{ $sortVar }} === '{{ $sortKey }}') {
@@ -131,21 +131,21 @@
                                 @if($isSortable)
                                     <i class="ri-arrow-up-line text-primary-600" x-show="{{ $sortVar }} === '{{ $sortKey }}' && {{ $directionVar }} === 'asc'"></i>
                                     <i class="ri-arrow-down-line text-primary-600" x-show="{{ $sortVar }} === '{{ $sortKey }}' && {{ $directionVar }} === 'desc'"></i>
-                                    <i class="ri-expand-up-down-line text-gray-300" x-show="{{ $sortVar }} !== '{{ $sortKey }}'"></i>
+                                    <i class="ri-expand-up-down-line text-ink-300" x-show="{{ $sortVar }} !== '{{ $sortKey }}'"></i>
                                 @endif
                             </span>
                         </th>
                     @endforeach
 
                     @if($hasActions)
-                        <th class="sticky top-0 z-10 bg-white px-5 py-3 text-right border-b border-gray-100">Aksi</th>
+                        <th class="sticky top-0 z-10 bg-white px-5 py-3 text-right border-b border-line-100">Aksi</th>
                     @endif
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-100">
+            <tbody class="divide-y divide-line-100">
                 <template x-if="{{ $loadingVar }}">
                     <tr>
-                        <td colspan="{{ $colspan }}" class="px-5 py-12 text-center text-gray-400">
+                        <td colspan="{{ $colspan }}" class="px-5 py-12 text-center text-ink-400">
                             <span class="animate-spin inline-block size-5 border-2 border-primary-500 border-t-transparent rounded-full"></span>
                         </td>
                     </tr>
@@ -153,14 +153,14 @@
 
                 <template x-if="!{{ $loadingVar }} && {{ $rowsVar }}.length === 0">
                     <tr>
-                        <td colspan="{{ $colspan }}" class="px-5 py-12 text-center text-gray-400">
+                        <td colspan="{{ $colspan }}" class="px-5 py-12 text-center text-ink-400">
                             {{ $emptyText }}
                         </td>
                     </tr>
                 </template>
 
                 <template x-for="(row, index) in {{ $rowsVar }}" :key="row.{{ $rowKey }}">
-                    <tr class="hover:bg-gray-50" @if($selectable) :class="{{ $selectedVar }}.includes(row.{{ $rowKey }}) ? 'bg-primary-50/60' : ''" @endif>
+                    <tr class="hover:bg-surface-50" @if($selectable) :class="{{ $selectedVar }}.includes(row.{{ $rowKey }}) ? 'bg-primary-50/60' : ''" @endif>
                         @if($selectable)
                             <td class="px-5 py-3">
                                 <input type="checkbox"
@@ -168,12 +168,12 @@
                                     @change="$event.target.checked
                                         ? {{ $selectedVar }}.push(row.{{ $rowKey }})
                                         : {{ $selectedVar }} = {{ $selectedVar }}.filter(id => id !== row.{{ $rowKey }})"
-                                    class="rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+                                    class="rounded border-line-300 text-primary-600 focus:ring-primary-500">
                             </td>
                         @endif
 
                         @if($showNumber)
-                            <td class="px-5 py-3 text-gray-500" x-text="({{ $metaVar }}?.from ?? 1) + index"></td>
+                            <td class="px-5 py-3 text-ink-500" x-text="({{ $metaVar }}?.from ?? 1) + index"></td>
                         @endif
 
                         @foreach($columns as $col)

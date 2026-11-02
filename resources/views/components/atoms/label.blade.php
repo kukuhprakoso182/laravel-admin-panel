@@ -18,7 +18,7 @@
 
 <label
     for="{{ $for }}"
-    {{ $attributes->merge(['class' => "block {$sizeClass} font-medium mb-2 text-gray-700"]) }}
+    {{ $attributes->merge(['class' => "block {$sizeClass} font-medium mb-2 text-ink-700"]) }}
 >
     {{ $slot }}
     @if($required)

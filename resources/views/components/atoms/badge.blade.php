@@ -11,7 +11,7 @@
     // 'primary' mengikuti warna tema (lihat @theme di resources/css/app.css).
     $variants = [
         'solid' => [
-            'gray' => 'bg-gray-600 text-white',
+            'gray' => 'bg-surface-600 text-white',
             'primary' => 'bg-primary-600 text-white',
             'blue' => 'bg-blue-600 text-white',
             'red' => 'bg-red-600 text-white',
@@ -22,7 +22,7 @@
             'teal' => 'bg-teal-600 text-white',
         ],
         'soft' => [
-            'gray' => 'bg-gray-100 text-gray-800',
+            'gray' => 'bg-surface-100 text-ink-800',
             'primary' => 'bg-primary-100 text-primary-800',
             'blue' => 'bg-blue-100 text-blue-800',
             'red' => 'bg-red-100 text-red-800',
@@ -33,7 +33,7 @@
             'teal' => 'bg-teal-100 text-teal-800',
         ],
         'outline' => [
-            'gray' => 'bg-transparent border border-gray-500 text-gray-600',
+            'gray' => 'bg-transparent border border-line-500 text-ink-600',
             'primary' => 'bg-transparent border border-primary-500 text-primary-600',
             'blue' => 'bg-transparent border border-blue-500 text-blue-600',
             'red' => 'bg-transparent border border-red-500 text-red-600',
@@ -46,7 +46,7 @@
     ];
 
     $dots = [
-        'gray' => 'bg-gray-500',
+        'gray' => 'bg-surface-500',
         'primary' => 'bg-primary-500',
         'blue' => 'bg-blue-500',
         'red' => 'bg-red-500',
@@ -58,7 +58,7 @@
     ];
 
     $variantClasses = $variant === 'white'
-        ? 'bg-white border border-gray-200 text-gray-700 shadow-sm'
+        ? 'bg-white border border-line-200 text-ink-700 shadow-sm'
         : ($variants[$variant][$color] ?? $variants['soft']['gray']);
 @endphp
 

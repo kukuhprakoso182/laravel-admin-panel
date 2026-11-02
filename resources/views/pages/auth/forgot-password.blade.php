@@ -1,7 +1,7 @@
 <x-layouts.guest title="Lupa Password">
     <div class="mb-6 text-center">
-        <h1 class="text-xl font-semibold text-gray-800">Lupa Password</h1>
-        <p class="text-sm text-gray-500 mt-1">
+        <h1 class="text-xl font-semibold text-ink-800">Lupa Password</h1>
+        <p class="text-sm text-ink-500 mt-1">
             Masukkan email akun Anda, kami akan mengirimkan tautan untuk membuat password baru.
         </p>
     </div>
@@ -39,7 +39,7 @@
             Kirim Tautan Reset Password
         </x-atoms.button>
 
-        <div class="text-center text-sm text-gray-500">
+        <div class="text-center text-sm text-ink-500">
             <a href="{{ route('login') }}" class="text-primary-600 hover:underline">
                 Kembali ke halaman login
             </a>

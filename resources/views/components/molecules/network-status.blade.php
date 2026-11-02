@@ -20,7 +20,7 @@
     <div
         x-show="showTooltip"
         x-cloak x-transition
-        class="absolute inset-e-0 top-full mt-1 whitespace-nowrap rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs text-gray-600 shadow-lg z-50"
+        class="absolute inset-e-0 top-full mt-1 whitespace-nowrap rounded-lg border border-line-200 bg-white px-3 py-1.5 text-xs text-ink-600 shadow-lg z-50"
     >
         <span x-show="isOnline">Terhubung ke internet</span>
         <span x-show="!isOnline">Tidak ada koneksi internet</span>

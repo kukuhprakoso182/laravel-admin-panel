@@ -10,7 +10,7 @@
     $colors = [
         'primary' => 'border-primary-600',
         'blue' => 'border-blue-600',
-        'gray' => 'border-gray-600',
+        'gray' => 'border-line-600',
         'red' => 'border-red-600',
         'green' => 'border-green-600',
         'teal' => 'border-teal-600',

@@ -36,7 +36,7 @@
 
             <div>
                 <x-atoms.label required>Role</x-atoms.label>
-                <div class="flex flex-wrap gap-3 border border-gray-200 rounded-lg p-3">
+                <div class="flex flex-wrap gap-3 border border-line-200 rounded-lg p-3">
                     @foreach($roles as $role)
                         <x-atoms.checkbox
                             name="roles[]"

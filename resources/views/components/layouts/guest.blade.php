@@ -14,7 +14,7 @@
         <div class="">
         </div>
 
-        <div class="w-full max-w-sm bg-white rounded-3xl border border-gray-200 shadow-sm p-6">
+        <div class="w-full max-w-sm bg-white rounded-3xl border border-line-200 shadow-sm p-6">
             {{ $slot }}
         </div>
     </div>

@@ -10,7 +10,7 @@
 @php
     // Kombinasi ditulis LITERAL agar terdeteksi Tailwind (jangan interpolasi "bg-{$color}-100").
     $palette = [
-        'gray' => 'bg-gray-100 text-gray-700',
+        'gray' => 'bg-surface-100 text-ink-700',
         'primary' => 'bg-primary-100 text-primary-700',
         'blue' => 'bg-blue-100 text-blue-700',
         'red' => 'bg-red-100 text-red-700',

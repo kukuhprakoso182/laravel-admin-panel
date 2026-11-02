@@ -9,7 +9,7 @@
         'amber' => 'bg-amber-50 text-amber-600',
         'emerald' => 'bg-emerald-50 text-emerald-600',
     ];
-    $classes = $colorMap[$color] ?? 'bg-gray-50 text-gray-600';
+    $classes = $colorMap[$color] ?? 'bg-surface-50 text-ink-600';
 @endphp
 
 <span class="inline-flex items-center justify-center w-10 h-10 rounded-lg {{ $classes }}">

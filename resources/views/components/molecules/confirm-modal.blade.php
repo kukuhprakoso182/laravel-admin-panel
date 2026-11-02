@@ -14,7 +14,7 @@
         'red' => 'bg-red-600 hover:bg-red-700',
         'primary' => 'bg-primary-600 hover:bg-primary-700',
         'blue' => 'bg-blue-600 hover:bg-blue-700',
-        'gray' => 'bg-gray-600 hover:bg-gray-700',
+        'gray' => 'bg-surface-600 hover:bg-surface-700',
     ];
     $confirmClass = 'py-2.5 px-4 text-sm font-medium rounded-lg text-white cursor-pointer transition-colors ' .
         ($confirmColors[$confirmColor] ?? $confirmColors['red']);
@@ -25,7 +25,7 @@
 
     <x-slot:footer>
         <button type="button" data-modal-close="{{ $id }}"
-                class="py-2.5 px-4 text-sm font-medium rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 cursor-pointer">
+                class="py-2.5 px-4 text-sm font-medium rounded-lg border border-line-300 text-ink-700 hover:bg-surface-50 cursor-pointer">
             {{ $cancelText }}
         </button>
 

@@ -29,6 +29,42 @@
     --color-primary-800: var(--color-teal-800);
     --color-primary-900: var(--color-teal-900);
 
+    /*
+     * ---------------------------------------------------------------
+     * WARNA NETRAL (hue abu-abu seluruh UI)
+     * ---------------------------------------------------------------
+     * surface-N : background       -> bg-surface-50, hover:bg-surface-100
+     * line-N    : border/divider   -> border-line-200, divide-line-100
+     * ink-N     : teks             -> text-ink-700, placeholder:text-ink-400
+     * Dipetakan 1:1 ke palet gray, jadi tampilan sama seperti sebelumnya.
+     * Ganti `gray` jadi `slate` / `zinc` / `neutral` / `stone` untuk
+     * mengubah nuansa netral seluruh aplikasi. Cukup di blok ini.
+     */
+    --color-surface-50:  var(--color-gray-50);
+    --color-surface-100: var(--color-gray-100);
+    --color-surface-200: var(--color-gray-200);
+    --color-surface-300: var(--color-gray-300);
+    --color-surface-400: var(--color-gray-400);
+    --color-surface-500: var(--color-gray-500);
+    --color-surface-600: var(--color-gray-600);
+    --color-surface-700: var(--color-gray-700);
+
+    --color-line-50:  var(--color-gray-50);
+    --color-line-100: var(--color-gray-100);
+    --color-line-200: var(--color-gray-200);
+    --color-line-300: var(--color-gray-300);
+    --color-line-400: var(--color-gray-400);
+    --color-line-500: var(--color-gray-500);
+    --color-line-600: var(--color-gray-600);
+
+    --color-ink-300: var(--color-gray-300);
+    --color-ink-400: var(--color-gray-400);
+    --color-ink-500: var(--color-gray-500);
+    --color-ink-600: var(--color-gray-600);
+    --color-ink-700: var(--color-gray-700);
+    --color-ink-800: var(--color-gray-800);
+    --color-ink-900: var(--color-gray-900);
+
     /* Warna status "sukses" (alert/dialog sukses), terpisah dari brand */
     --color-success-50:  var(--color-teal-50);
     --color-success-100: var(--color-teal-100);

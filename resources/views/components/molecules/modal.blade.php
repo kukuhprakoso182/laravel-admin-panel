@@ -44,8 +44,8 @@
 
         @isset($title)
             <div class="flex items-center justify-between mb-5">
-                <h2 class="text-lg font-semibold text-gray-900">{{ $title }}</h2>
-                <button type="button" @click="{{ $show }} = false" class="text-gray-400 hover:text-gray-600 cursor-pointer">
+                <h2 class="text-lg font-semibold text-ink-900">{{ $title }}</h2>
+                <button type="button" @click="{{ $show }} = false" class="text-ink-400 hover:text-ink-600 cursor-pointer">
                     <i class="ri-close-line ri-lg"></i>
                 </button>
             </div>

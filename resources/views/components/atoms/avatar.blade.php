@@ -17,7 +17,7 @@
 
     $statusColor = [
         'online' => 'bg-green-500',
-        'offline' => 'bg-gray-400',
+        'offline' => 'bg-surface-400',
         'busy' => 'bg-red-500',
         'away' => 'bg-yellow-500',
     ][$status] ?? null;
@@ -32,7 +32,7 @@
         >
     @else
         <span {{ $attributes->merge(['class' =>
-            "{$sizes[$size]} inline-flex items-center justify-center rounded-{$rounded} bg-gray-200 font-semibold text-gray-600"
+            "{$sizes[$size]} inline-flex items-center justify-center rounded-{$rounded} bg-surface-200 font-semibold text-ink-600"
         ]) }}>
             {{ $initials }}
         </span>

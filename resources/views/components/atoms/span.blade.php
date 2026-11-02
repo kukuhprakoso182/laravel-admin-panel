@@ -25,7 +25,7 @@
 
     // Kombinasi color+tone ditulis literal (bukan interpolasi) supaya terdeteksi Tailwind scanner
     $colorToneMap = [
-        'gray'  => ['default' => 'text-gray-700', 'muted' => 'text-gray-500', 'subtle' => 'text-gray-400'],
+        'gray'  => ['default' => 'text-ink-700', 'muted' => 'text-ink-500', 'subtle' => 'text-ink-400'],
         'blue'  => ['default' => 'text-blue-700', 'muted' => 'text-blue-500', 'subtle' => 'text-blue-400'],
         'red'   => ['default' => 'text-red-700', 'muted' => 'text-red-500', 'subtle' => 'text-red-400'],
         'green' => ['default' => 'text-green-700', 'muted' => 'text-green-500', 'subtle' => 'text-green-400'],

@@ -48,7 +48,7 @@
         'indigo' => 'bg-indigo-100 text-indigo-700',
         'purple' => 'bg-purple-100 text-purple-700',
         'pink' => 'bg-pink-100 text-pink-700',
-        'gray' => 'bg-gray-100 text-gray-700',
+        'gray' => 'bg-surface-100 text-ink-700',
         'teal' => 'bg-teal-100 text-teal-700',
         'primary' => 'bg-primary-100 text-primary-700',
         'slate' => 'bg-slate-200 text-slate-700',

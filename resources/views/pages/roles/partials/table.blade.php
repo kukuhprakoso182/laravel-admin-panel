@@ -11,11 +11,11 @@
     show-number
 >
     <x-slot:cell_name>
-        <span class="font-medium text-gray-900" x-text="row.name"></span>
+        <span class="font-medium text-ink-900" x-text="row.name"></span>
     </x-slot:cell_name>
 
     <x-slot:cell_description>
-        <span class="text-gray-500" x-text="row.description || '-'"></span>
+        <span class="text-ink-500" x-text="row.description || '-'"></span>
     </x-slot:cell_description>
 
     <x-slot:cell_users_count>
@@ -23,7 +23,7 @@
     </x-slot:cell_users_count>
 
     <x-slot:cell_created_at>
-        <span class="text-gray-500" x-text="formatDate(row.created_at)"></span>
+        <span class="text-ink-500" x-text="formatDate(row.created_at)"></span>
     </x-slot:cell_created_at>
 
     <x-slot:actions>

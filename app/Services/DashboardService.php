@@ -267,8 +267,8 @@ class DashboardService
             'created', 'login' => 'bg-emerald-500',
             'updated' => 'bg-blue-500',
             'deleted', 'login_failed' => 'bg-red-500',
-            'logout' => 'bg-gray-400',
-            default => 'bg-gray-300',
+            'logout' => 'bg-surface-400',
+            default => 'bg-surface-300',
         };
     }
 }

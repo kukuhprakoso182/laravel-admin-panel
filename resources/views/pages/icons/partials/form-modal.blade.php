@@ -25,8 +25,8 @@
             />
 
             <div class="flex items-center gap-x-3">
-                <i :class="form.value" class="ri-lg text-gray-600"></i>
-                <span class="text-sm text-gray-400">Preview icon</span>
+                <i :class="form.value" class="ri-lg text-ink-600"></i>
+                <span class="text-sm text-ink-400">Preview icon</span>
             </div>
 
             <x-atoms.switch label="Aktif" x-model="form.is_active" />

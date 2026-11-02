@@ -8,7 +8,7 @@
     show-number
 >
     <x-slot:cell_name>
-        <span class="font-medium text-gray-900" x-text="row.name"></span>
+        <span class="font-medium text-ink-900" x-text="row.name"></span>
     </x-slot:cell_name>
 
     <x-slot:actions>

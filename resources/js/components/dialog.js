@@ -135,8 +135,8 @@ class DialogManager {
         const isConfirm = type === this.DIALOG_CONFIRM;
 
         return `
-            <dialog id="${type}" class="js-dialog w-full max-w-md rounded-xl shadow-xl p-0 m-auto border border-gray-200">
-                <div class="flex justify-between items-center gap-x-3 p-4 border-b border-gray-200">
+            <dialog id="${type}" class="js-dialog w-full max-w-md rounded-xl shadow-xl p-0 m-auto border border-line-200">
+                <div class="flex justify-between items-center gap-x-3 p-4 border-b border-line-200">
                     <div class="flex items-center gap-x-3">
                         ${isConfirm ? `
                             <span class="flex items-center justify-center size-9 rounded-full shrink-0 ${colors.icon}">
@@ -145,10 +145,10 @@ class DialogManager {
                                 </svg>
                             </span>
                         ` : ''}
-                        <h3 class="text-lg font-semibold text-gray-800">${this.renderText(title)}</h3>
+                        <h3 class="text-lg font-semibold text-ink-800">${this.renderText(title)}</h3>
                     </div>
                     <button type="button" data-dialog-close="${type}"
-                            class="js-dialog-close shrink-0 cursor-pointer text-gray-400 hover:text-gray-600">
+                            class="js-dialog-close shrink-0 cursor-pointer text-ink-400 hover:text-ink-600">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
                             <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
                         </svg>
@@ -156,12 +156,12 @@ class DialogManager {
                 </div>
 
                 <div class="p-4 md:p-5">
-                    <p class="text-sm text-gray-600">${this.renderText(message)}</p>
+                    <p class="text-sm text-ink-600">${this.renderText(message)}</p>
                 </div>
 
-                <div class="flex justify-end gap-x-2 p-4 md:p-5 border-t border-gray-200">
+                <div class="flex justify-end gap-x-2 p-4 md:p-5 border-t border-line-200">
                     <button type="button" data-dialog-close="${type}"
-                            class="js-dialog-close py-2.5 px-4 text-sm font-medium rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 cursor-pointer">
+                            class="js-dialog-close py-2.5 px-4 text-sm font-medium rounded-lg border border-line-300 text-ink-700 hover:bg-surface-50 cursor-pointer">
                         Close
                     </button>
                     ${isConfirm ? `

@@ -19,8 +19,8 @@
         <div class="flex items-center gap-x-3">
             <x-atoms.avatar-text name-var="row.name" size="sm" />
             <div>
-                <div class="font-medium text-gray-900" x-text="row.name"></div>
-                <div class="text-xs text-gray-400" x-text="row.email"></div>
+                <div class="font-medium text-ink-900" x-text="row.name"></div>
+                <div class="text-xs text-ink-400" x-text="row.email"></div>
             </div>
         </div>
     </x-slot:cell_user>
@@ -38,7 +38,7 @@
     </x-slot:cell_status>
 
     <x-slot:cell_created_at>
-        <span class="text-gray-500" x-text="formatDate(row.created_at)"></span>
+        <span class="text-ink-500" x-text="formatDate(row.created_at)"></span>
     </x-slot:cell_created_at>
 
     <x-slot:actions>

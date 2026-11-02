@@ -3,7 +3,7 @@
     'author' => config('app.author', "Kukuh Prakoso"),
 ])
 
-<aside {{ $attributes->merge(['class' => 'w-full h-full bg-gray-100 rounded-2xl flex flex-col overflow-hidden']) }}>
+<aside {{ $attributes->merge(['class' => 'w-full h-full bg-surface-100 rounded-2xl flex flex-col overflow-hidden']) }}>
 
     <x-organisms.sidebar.sidebar-brand :brand="$brand"/>
 

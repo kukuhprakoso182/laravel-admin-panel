@@ -4,7 +4,7 @@
 ])
 
 <x-layouts.base :title="$title">
-    <div x-data="{ sidebarOpen: false }" class="h-screen flex gap-3 bg-gray-100 p-3 overflow-hidden">
+    <div x-data="{ sidebarOpen: false }" class="h-screen flex gap-3 bg-surface-100 p-3 overflow-hidden">
 
         <div x-show="sidebarOpen" x-cloak @click="sidebarOpen = false"
              class="fixed inset-0 bg-black/50 z-30 lg:hidden"></div>

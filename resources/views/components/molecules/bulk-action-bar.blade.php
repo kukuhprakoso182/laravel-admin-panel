@@ -12,7 +12,7 @@
         {{ $slot }}
         <button type="button"
                 @click="{{ $selectedVar }} = []"
-                class="text-gray-500 hover:text-gray-700 px-2 cursor-pointer">
+                class="text-ink-500 hover:text-ink-700 px-2 cursor-pointer">
             Batal
         </button>
     </div>

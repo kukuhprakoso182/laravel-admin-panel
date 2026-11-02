@@ -5,11 +5,11 @@
     <x-atoms.status-dot :color="$activity['color']" />
 
     <div class="flex-1">
-        <p class="text-sm text-gray-700">{{ $activity['description'] }}</p>
-        <p class="text-xs text-gray-400 mt-0.5">oleh {{ $activity['causer'] }}</p>
+        <p class="text-sm text-ink-700">{{ $activity['description'] }}</p>
+        <p class="text-xs text-ink-400 mt-0.5">oleh {{ $activity['causer'] }}</p>
     </div>
 
-    <span class="text-xs text-gray-400 whitespace-nowrap">
+    <span class="text-xs text-ink-400 whitespace-nowrap">
         {{ optional($activity['created_at'])->diffForHumans() }}
     </span>
 </li>

@@ -47,9 +47,9 @@
             <div>
                 <x-atoms.label>Icon</x-atoms.label>
                 <div class="flex items-center gap-x-3">
-                    <div class="shrink-0 flex items-center justify-center size-10 rounded-lg border border-gray-200 bg-gray-50">
-                        <i :class="selectedIconClass" class="ri-lg text-gray-600" x-show="selectedIconClass"></i>
-                        <i class="ri-question-line ri-lg text-gray-300" x-show="!selectedIconClass"></i>
+                    <div class="shrink-0 flex items-center justify-center size-10 rounded-lg border border-line-200 bg-surface-50">
+                        <i :class="selectedIconClass" class="ri-lg text-ink-600" x-show="selectedIconClass"></i>
+                        <i class="ri-question-line ri-lg text-ink-300" x-show="!selectedIconClass"></i>
                     </div>
                     <div class="flex-1">
                         <x-atoms.select

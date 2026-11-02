@@ -8,7 +8,7 @@
 <div class="flex items-center justify-end gap-x-1">
     @if($editFn)
         <button type="button" @click="{{ $editFn }}"
-                class="p-2 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-primary-600 cursor-pointer">
+                class="p-2 rounded-lg text-ink-400 hover:bg-surface-100 hover:text-primary-600 cursor-pointer">
             <i class="ri-edit-box-line ri-lg"></i>
         </button>
     @endif
@@ -17,7 +17,7 @@
         <button type="button" @click="confirmDeleteDialog({{ $deleteLabel }}, {{ $deleteUrl }}, {
                     onSuccess: () => { {{ $onDeleteSuccess }} }
                 })"
-                class="p-2 rounded-lg text-gray-400 hover:bg-red-50 hover:text-red-600 cursor-pointer">
+                class="p-2 rounded-lg text-ink-400 hover:bg-red-50 hover:text-red-600 cursor-pointer">
             <i class="ri-delete-bin-line ri-lg"></i>
         </button>
     @endif

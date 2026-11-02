@@ -1,7 +1,7 @@
 @props(['title', 'items'])
 <div>
     @if($title)
-        <p class="px-3 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wide">{{ $title }}</p>
+        <p class="px-3 mb-2 text-xs font-semibold text-ink-400 uppercase tracking-wide">{{ $title }}</p>
     @endif
     <div class="space-y-1">
         @foreach($items as $item)
