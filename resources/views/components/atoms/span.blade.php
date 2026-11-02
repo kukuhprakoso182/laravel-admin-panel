@@ -1,7 +1,7 @@
 @props([
     'size' => 'sm',        // xs | sm | base | lg
     'weight' => 'normal',  // normal | medium | semibold | bold
-    'color' => 'gray',     // gray | blue | red | green | amber
+    'color' => 'gray',     // gray | primary | blue | red | green | amber | teal
     'tone' => 'default',   // default | muted | subtle
     'uppercase' => false,
     'truncate' => false,

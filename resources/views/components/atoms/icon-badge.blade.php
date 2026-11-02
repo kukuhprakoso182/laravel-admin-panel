@@ -3,6 +3,7 @@
 
 @php
     $colorMap = [
+        'primary' => 'bg-primary-50 text-primary-600',
         'blue' => 'bg-blue-50 text-blue-600',
         'purple' => 'bg-purple-50 text-purple-600',
         'amber' => 'bg-amber-50 text-amber-600',

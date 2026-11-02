@@ -40,7 +40,7 @@ class DashboardService
                 'value' => $this->userRepository->query()->count(),
                 'change' => $this->monthOverMonthChange($this->userRepository),
                 'icon' => 'users',
-                'color' => 'blue',
+                'color' => 'primary',
             ],
             [
                 'route' => 'roles.index',
