@@ -2,7 +2,7 @@
 
     <template x-if="loadingTree">
         <div class="flex items-center justify-center py-12 text-gray-400">
-            <span class="animate-spin inline-block size-5 border-2 border-blue-500 border-t-transparent rounded-full"></span>
+            <span class="animate-spin inline-block size-5 border-2 border-primary-500 border-t-transparent rounded-full"></span>
         </div>
     </template>
 

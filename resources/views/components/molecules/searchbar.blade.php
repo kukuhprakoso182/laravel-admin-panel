@@ -93,12 +93,12 @@
             placeholder="{{ $placeholder }}"
             autocomplete="off"
             class="w-full ps-10 pe-10 py-2.5 rounded-full border border-gray-200 bg-gray-50 text-sm
-                   placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500
-                   focus:border-blue-500 focus:bg-white"
+                   placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-500
+                   focus:border-primary-500 focus:bg-white"
         >
 
         <div x-show="loading" x-cloak class="absolute inset-y-0 inset-e-0 flex items-center pe-3.5">
-            <span class="animate-spin inline-block size-4 border-2 border-blue-500 border-t-transparent rounded-full"></span>
+            <span class="animate-spin inline-block size-4 border-2 border-primary-500 border-t-transparent rounded-full"></span>
         </div>
 
         <button
@@ -133,7 +133,7 @@
                 :href="item.url"
                 @mouseenter="activeIndex = index"
                 class="flex items-center gap-x-3 px-4 py-2.5 text-sm transition-colors"
-                :class="activeIndex === index ? 'bg-blue-50' : 'hover:bg-gray-50'"
+                :class="activeIndex === index ? 'bg-primary-50' : 'hover:bg-gray-50'"
             >
                 <span class="inline-flex items-center justify-center size-8 rounded-lg bg-gray-100 text-gray-500 text-xs font-semibold shrink-0"
                       x-text="item.type_label ?? '?'"></span>

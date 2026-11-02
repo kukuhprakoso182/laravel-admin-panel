@@ -43,7 +43,7 @@
 
         <x-atoms.button
             type="submit"
-            color="teal"
+            color="primary"
             class="w-full justify-center"
             loading-when="submitting"
         >

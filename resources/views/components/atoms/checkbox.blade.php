@@ -25,8 +25,8 @@
                 {{ $attributes->merge(['class' => 'peer sr-only']) }}
             >
             <span class="size-5 rounded-md border-2 border-gray-300 bg-white
-                peer-checked:bg-blue-600 peer-checked:border-blue-600
-                peer-focus-visible:ring-2 peer-focus-visible:ring-blue-500 peer-focus-visible:ring-offset-2
+                peer-checked:bg-primary-600 peer-checked:border-primary-600
+                peer-focus-visible:ring-2 peer-focus-visible:ring-primary-500 peer-focus-visible:ring-offset-2
                 peer-disabled:opacity-50 transition-colors flex items-center justify-center">
                 <svg class="hidden peer-checked:block size-3 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="20 6 9 17 4 12"></polyline>

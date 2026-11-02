@@ -8,7 +8,7 @@
 
         <div class="mt-6">
             <a href="{{ url('/') }}"
-               class="inline-flex items-center justify-center px-4 py-2 rounded-md bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition">
+               class="inline-flex items-center justify-center px-4 py-2 rounded-md bg-primary-600 text-white text-sm font-medium hover:bg-primary-700 transition">
                 Kembali ke Beranda
             </a>
         </div>

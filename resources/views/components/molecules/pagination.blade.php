@@ -12,12 +12,12 @@
     <div class="flex items-center gap-x-1">
         <button type="button" :disabled="{{ $pageVar }} <= 1"
                 @click="{{ $pageVar }}--; {{ $fetchFn }}()"
-                class="px-3 py-1.5 rounded-lg border border-gray-200 disabled:opacity-40 disabled:pointer-events-none hover:bg-teal-50 cursor-pointer">
+                class="px-3 py-1.5 rounded-lg border border-gray-200 disabled:opacity-40 disabled:pointer-events-none hover:bg-primary-50 cursor-pointer">
             Prev
         </button>
         <button type="button" :disabled="{{ $pageVar }} >= {{ $metaVar }}.last_page"
                 @click="{{ $pageVar }}++; {{ $fetchFn }}()"
-                class="px-3 py-1.5 rounded-lg border border-gray-200 disabled:opacity-40 disabled:pointer-events-none hover:bg-teal-50 cursor-pointer">
+                class="px-3 py-1.5 rounded-lg border border-gray-200 disabled:opacity-40 disabled:pointer-events-none hover:bg-primary-50 cursor-pointer">
             Next
         </button>
     </div>

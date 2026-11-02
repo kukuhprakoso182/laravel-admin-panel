@@ -98,7 +98,7 @@
                                         {{ $selectedVar }} = {{ $selectedVar }}.filter(id => !ids.includes(id));
                                     }
                                 "
-                                class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                class="rounded border-gray-300 text-primary-600 focus:ring-primary-500">
                         </th>
                     @endif
 
@@ -129,8 +129,8 @@
                             <span class="inline-flex items-center gap-x-1">
                                 {{ $col['label'] }}
                                 @if($isSortable)
-                                    <i class="ri-arrow-up-line text-blue-600" x-show="{{ $sortVar }} === '{{ $sortKey }}' && {{ $directionVar }} === 'asc'"></i>
-                                    <i class="ri-arrow-down-line text-blue-600" x-show="{{ $sortVar }} === '{{ $sortKey }}' && {{ $directionVar }} === 'desc'"></i>
+                                    <i class="ri-arrow-up-line text-primary-600" x-show="{{ $sortVar }} === '{{ $sortKey }}' && {{ $directionVar }} === 'asc'"></i>
+                                    <i class="ri-arrow-down-line text-primary-600" x-show="{{ $sortVar }} === '{{ $sortKey }}' && {{ $directionVar }} === 'desc'"></i>
                                     <i class="ri-expand-up-down-line text-gray-300" x-show="{{ $sortVar }} !== '{{ $sortKey }}'"></i>
                                 @endif
                             </span>
@@ -146,7 +146,7 @@
                 <template x-if="{{ $loadingVar }}">
                     <tr>
                         <td colspan="{{ $colspan }}" class="px-5 py-12 text-center text-gray-400">
-                            <span class="animate-spin inline-block size-5 border-2 border-blue-500 border-t-transparent rounded-full"></span>
+                            <span class="animate-spin inline-block size-5 border-2 border-primary-500 border-t-transparent rounded-full"></span>
                         </td>
                     </tr>
                 </template>
@@ -160,7 +160,7 @@
                 </template>
 
                 <template x-for="(row, index) in {{ $rowsVar }}" :key="row.{{ $rowKey }}">
-                    <tr class="hover:bg-gray-50" @if($selectable) :class="{{ $selectedVar }}.includes(row.{{ $rowKey }}) ? 'bg-blue-50/60' : ''" @endif>
+                    <tr class="hover:bg-gray-50" @if($selectable) :class="{{ $selectedVar }}.includes(row.{{ $rowKey }}) ? 'bg-primary-50/60' : ''" @endif>
                         @if($selectable)
                             <td class="px-5 py-3">
                                 <input type="checkbox"
@@ -168,7 +168,7 @@
                                     @change="$event.target.checked
                                         ? {{ $selectedVar }}.push(row.{{ $rowKey }})
                                         : {{ $selectedVar }} = {{ $selectedVar }}.filter(id => id !== row.{{ $rowKey }})"
-                                    class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                    class="rounded border-gray-300 text-primary-600 focus:ring-primary-500">
                             </td>
                         @endif
 

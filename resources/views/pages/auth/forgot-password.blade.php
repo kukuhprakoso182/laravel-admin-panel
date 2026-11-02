@@ -32,7 +32,7 @@
 
         <x-atoms.button
             type="submit"
-            color="teal"
+            color="primary"
             class="w-full justify-center"
             loading-when="submitting"
         >
@@ -40,7 +40,7 @@
         </x-atoms.button>
 
         <div class="text-center text-sm text-gray-500">
-            <a href="{{ route('login') }}" class="text-teal-600 hover:underline">
+            <a href="{{ route('login') }}" class="text-primary-600 hover:underline">
                 Kembali ke halaman login
             </a>
         </div>

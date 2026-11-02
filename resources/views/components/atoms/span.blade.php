@@ -31,6 +31,7 @@
         'green' => ['default' => 'text-green-700', 'muted' => 'text-green-500', 'subtle' => 'text-green-400'],
         'amber' => ['default' => 'text-amber-700', 'muted' => 'text-amber-500', 'subtle' => 'text-amber-400'],
         'teal'  => ['default' => 'text-teal-700', 'muted' => 'text-teal-500', 'subtle' => 'text-teal-400'],
+        'primary' => ['default' => 'text-primary-700', 'muted' => 'text-primary-500', 'subtle' => 'text-primary-400'],
     ];
 
     $classes = trim(

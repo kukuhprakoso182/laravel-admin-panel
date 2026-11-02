@@ -14,13 +14,17 @@ class DialogManager {
                 icon: 'text-red-600 bg-red-100',
                 button: 'bg-red-600 hover:bg-red-700',
             },
+            primary: {
+                icon: 'text-primary-600 bg-primary-100',
+                button: 'bg-primary-600 hover:bg-primary-700',
+            },
             blue: {
                 icon: 'text-blue-600 bg-blue-100',
                 button: 'bg-blue-600 hover:bg-blue-700',
             },
             green: {
-                icon: 'text-teal-600 bg-teal-100',
-                button: 'bg-teal-600 hover:bg-teal-700',
+                icon: 'text-success-600 bg-success-100',
+                button: 'bg-success-600 hover:bg-success-700',
             },
         };
 

@@ -28,7 +28,7 @@
     <x-slot:cell_roles>
         <div class="flex flex-wrap gap-1">
             <template x-for="role in row.roles" :key="role.id">
-                <x-atoms.badge color="blue"><span x-text="role.name"></span></x-atoms.badge>
+                <x-atoms.badge color="primary"><span x-text="role.name"></span></x-atoms.badge>
             </template>
         </div>
     </x-slot:cell_roles>

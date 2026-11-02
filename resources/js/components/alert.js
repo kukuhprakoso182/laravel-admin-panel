@@ -5,8 +5,8 @@ class AlertManager {
 
         this.typeMap = {
             success: {
-                wrapper: 'bg-teal-50 border-teal-200 text-teal-800',
-                icon: 'text-teal-500',
+                wrapper: 'bg-success-50 border-success-200 text-success-800',
+                icon: 'text-success-500',
                 iconPath: 'M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z',
             },
             error: {

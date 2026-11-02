@@ -4,7 +4,7 @@
     'size' => 'sm',
     'confirmText' => 'Ya, lanjutkan',
     'cancelText' => 'Batal',
-    'confirmColor' => 'red',   // red | blue | gray, dst
+    'confirmColor' => 'red',   // red | primary | blue | gray, dst
     'action' => null,          // opsional: URL untuk submit form (misal route delete)
     'method' => 'POST',        // method form kalau pakai action
 ])
@@ -12,6 +12,7 @@
 @php
     $confirmColors = [
         'red' => 'bg-red-600 hover:bg-red-700',
+        'primary' => 'bg-primary-600 hover:bg-primary-700',
         'blue' => 'bg-blue-600 hover:bg-blue-700',
         'gray' => 'bg-gray-600 hover:bg-gray-700',
     ];

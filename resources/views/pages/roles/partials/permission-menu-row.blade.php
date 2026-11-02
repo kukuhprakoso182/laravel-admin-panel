@@ -19,7 +19,7 @@
                 <input type="checkbox"
                     :checked="isChecked(node.id, perm.id)"
                     @change="togglePermission(node.id, perm.id)"
-                    class="rounded border-gray-300 text-teal-600 focus:ring-teal-500 cursor-pointer">
+                    class="rounded border-gray-300 text-primary-600 focus:ring-primary-500 cursor-pointer">
             </div>
         </template>
     </div>

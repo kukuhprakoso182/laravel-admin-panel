@@ -1,7 +1,7 @@
 @props([
     'variant' => 'solid',
     'size' => 'md',
-    'color' => 'blue',
+    'color' => 'primary',
     'pill' => false,
     'loading' => false,
     'loadingWhen' => null,
@@ -17,9 +17,11 @@
     ];
 
     // Setiap kombinasi variant+color ditulis LENGKAP (literal) agar terdeteksi Tailwind.
+    // 'primary' = warna tema (lihat @theme di resources/css/app.css); blue/teal/dst tetap tersedia sebagai warna bernama.
     // Tambahkan warna baru di sini kalau perlu — jangan pakai interpolasi "{$color}".
     $variantColorMap = [
         'solid' => [
+            'primary' => 'bg-primary-600 border border-transparent text-white hover:bg-primary-700 focus:bg-primary-700',
             'blue'   => 'bg-blue-600 border border-transparent text-white hover:bg-blue-700 focus:bg-blue-700',
             'red'    => 'bg-red-600 border border-transparent text-white hover:bg-red-700 focus:bg-red-700',
             'green'  => 'bg-green-600 border border-transparent text-white hover:bg-green-700 focus:bg-green-700',
@@ -29,6 +31,7 @@
             'teal'   => 'bg-teal-600 border border-transparent text-white hover:bg-teal-700 focus:bg-teal-700',
         ],
         'outline' => [
+            'primary' => 'bg-transparent border border-gray-300 text-gray-700 hover:border-primary-500 hover:text-primary-600 focus:border-primary-500 focus:text-primary-600',
             'blue'   => 'bg-transparent border border-gray-300 text-gray-700 hover:border-blue-500 hover:text-blue-600 focus:border-blue-500 focus:text-blue-600',
             'red'    => 'bg-transparent border border-gray-300 text-gray-700 hover:border-red-500 hover:text-red-600 focus:border-red-500 focus:text-red-600',
             'green'  => 'bg-transparent border border-gray-300 text-gray-700 hover:border-green-500 hover:text-green-600 focus:border-green-500 focus:text-green-600',
@@ -38,6 +41,7 @@
             'teal'   => 'bg-transparent border border-gray-300 text-gray-700 hover:border-teal-500 hover:text-teal-600 focus:border-teal-500 focus:text-teal-600',
         ],
         'ghost' => [
+            'primary' => 'bg-transparent border border-transparent text-primary-600 hover:bg-primary-50 focus:bg-primary-50',
             'blue'   => 'bg-transparent border border-transparent text-blue-600 hover:bg-blue-50 focus:bg-blue-50',
             'red'    => 'bg-transparent border border-transparent text-red-600 hover:bg-red-50 focus:bg-red-50',
             'green'  => 'bg-transparent border border-transparent text-green-600 hover:bg-green-50 focus:bg-green-50',
@@ -47,6 +51,7 @@
             'teal'   => 'bg-transparent border border-transparent text-teal-600 hover:bg-teal-50 focus:bg-teal-50',
         ],
         'soft' => [
+            'primary' => 'bg-primary-50 border border-transparent text-primary-700 hover:bg-primary-100 focus:bg-primary-100',
             'blue'   => 'bg-blue-50 border border-transparent text-blue-700 hover:bg-blue-100 focus:bg-blue-100',
             'red'    => 'bg-red-50 border border-transparent text-red-700 hover:bg-red-100 focus:bg-red-100',
             'green'  => 'bg-green-50 border border-transparent text-green-700 hover:bg-green-100 focus:bg-green-100',
@@ -56,6 +61,7 @@
             'teal'   => 'bg-teal-50 border border-transparent text-teal-700 hover:bg-teal-100 focus:bg-teal-100',
         ],
         'link' => [
+            'primary' => 'bg-transparent border border-transparent text-primary-600 hover:text-primary-700 underline-offset-2 hover:underline p-0!',
             'blue'   => 'bg-transparent border border-transparent text-blue-600 hover:text-blue-700 underline-offset-2 hover:underline p-0!',
             'red'    => 'bg-transparent border border-transparent text-red-600 hover:text-red-700 underline-offset-2 hover:underline p-0!',
             'green'  => 'bg-transparent border border-transparent text-green-600 hover:text-green-700 underline-offset-2 hover:underline p-0!',
@@ -70,7 +76,7 @@
 
     $variantClasses = $variant === 'white'
         ? $variantColorMap['white']
-        : ($variantColorMap[$variant][$color] ?? $variantColorMap['solid']['blue']);
+        : ($variantColorMap[$variant][$color] ?? $variantColorMap['solid']['primary']);
 
     $classes = ($variant !== 'link' ? $sizes[$size] . ' ' : '') .
         'inline-flex items-center justify-center gap-x-2 font-medium rounded-lg my-3

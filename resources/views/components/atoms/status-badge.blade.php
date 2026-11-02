@@ -8,9 +8,22 @@
 ])
 
 @php
+    // Kombinasi ditulis LITERAL agar terdeteksi Tailwind (jangan interpolasi "bg-{$color}-100").
+    $palette = [
+        'gray' => 'bg-gray-100 text-gray-700',
+        'primary' => 'bg-primary-100 text-primary-700',
+        'blue' => 'bg-blue-100 text-blue-700',
+        'red' => 'bg-red-100 text-red-700',
+        'yellow' => 'bg-yellow-100 text-yellow-700',
+        'green' => 'bg-green-100 text-green-700',
+        'amber' => 'bg-amber-100 text-amber-700',
+        'indigo' => 'bg-indigo-100 text-indigo-700',
+        'teal' => 'bg-teal-100 text-teal-700',
+    ];
+
     // Blade resolve kelas lengkap di sini (server-side), bukan dirakit di JS
-    $trueClass = "bg-{$trueColor}-100 text-{$trueColor}-700";
-    $falseClass = "bg-{$falseColor}-100 text-{$falseColor}-700";
+    $trueClass = $palette[$trueColor] ?? $palette['green'];
+    $falseClass = $palette[$falseColor] ?? $palette['gray'];
 @endphp
 
 <span

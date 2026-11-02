@@ -6,7 +6,7 @@
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-base font-semibold text-gray-800">Aktivitas Terbaru</h2>
             @if (Route::has('activity-logs.index'))
-                <a href="{{ route('activity-logs.index') }}" class="text-xs text-blue-600 hover:underline">
+                <a href="{{ route('activity-logs.index') }}" class="text-xs text-primary-600 hover:underline">
                     Lihat semua
                 </a>
             @endif

@@ -28,7 +28,7 @@
 
     $state = $hasError
         ? 'border-red-500 text-gray-900 focus:border-red-500 focus:ring-red-500'
-        : 'border-gray-200 text-gray-900 focus:border-blue-500 focus:ring-blue-500 focus:ring-1';
+        : 'border-gray-200 text-gray-900 focus:border-primary-500 focus:ring-primary-500 focus:ring-1';
 @endphp
 
 <div>

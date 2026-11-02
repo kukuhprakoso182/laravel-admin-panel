@@ -13,6 +13,6 @@
 
     <p class="px-3 pt-3 text-xs text-gray-400">
         {{ $brand }} by <a href="https://www.instagram.com/kukuh182/" target="_blank" class="underline hover:text-gray-600">{{ $author }}</a><br>
-        <x-atoms.span color="teal">v {{ config('app.version') }}</x-atoms.span>
+        <x-atoms.span color="primary">v {{ config('app.version') }}</x-atoms.span>
     </p>
 </div>

@@ -52,7 +52,7 @@
         type="button"
         x-ref="trigger"
         x-on:click="open ? (open = false) : openDropdown()"
-        class="w-full flex items-center justify-between gap-2 py-2.5 px-4 rounded-lg border border-gray-200 text-sm text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
+        class="w-full flex items-center justify-between gap-2 py-2.5 px-4 rounded-lg border border-gray-200 text-sm text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 cursor-pointer"
     >
         <span x-text="selectedLabel" class="truncate"></span>
         <svg class="size-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -74,14 +74,14 @@
                 x-model="search"
                 placeholder="Cari..."
                 x-on:keydown.escape="open = false"
-                class="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
             >
         </div>
         <ul class="max-h-56 overflow-y-auto py-1">
             @if($placeholder)
                 <li
                     x-on:click="select('')"
-                    x-bind:class="String({{ $model }}) === '' ? 'text-blue-600 font-medium' : 'text-gray-700'"
+                    x-bind:class="String({{ $model }}) === '' ? 'text-primary-600 font-medium' : 'text-gray-700'"
                     class="px-4 py-2 text-sm cursor-pointer hover:bg-gray-50"
                 >{{ $placeholder }}</li>
             @endif
@@ -89,7 +89,7 @@
                 <li
                     x-on:click="select(option.value)"
                     x-text="option.label"
-                    x-bind:class="String({{ $model }}) === String(option.value) ? 'text-blue-600 font-medium' : 'text-gray-700'"
+                    x-bind:class="String({{ $model }}) === String(option.value) ? 'text-primary-600 font-medium' : 'text-gray-700'"
                     class="px-4 py-2 text-sm cursor-pointer hover:bg-gray-50"
                 ></li>
             </template>

@@ -50,6 +50,7 @@
         'pink' => 'bg-pink-100 text-pink-700',
         'gray' => 'bg-gray-100 text-gray-700',
         'teal' => 'bg-teal-100 text-teal-700',
+        'primary' => 'bg-primary-100 text-primary-700',
         'slate' => 'bg-slate-200 text-slate-700',
     ];
 
@@ -57,7 +58,7 @@
         $colorClass = $palette[$color];
     } elseif ($resolvedInitials !== '?') {
         $hashSource = $name ?: $resolvedInitials;
-        $keys = array_keys($palette);
+        $keys = array_values(array_diff(array_keys($palette), ['primary'])); // 'primary' tidak ikut hash agar warna avatar lama tetap
         $hash = crc32($hashSource);
         $colorClass = $palette[$keys[$hash % count($keys)]];
     } else {

@@ -20,8 +20,8 @@
             {{ $attributes->merge(['class' => 'peer sr-only']) }}
         >
         <span class="size-5 rounded-full border-2 border-gray-300 bg-white
-            peer-checked:border-blue-600 peer-checked:border-[6px]
-            peer-focus-visible:ring-2 peer-focus-visible:ring-blue-500 peer-focus-visible:ring-offset-2
+            peer-checked:border-primary-600 peer-checked:border-[6px]
+            peer-focus-visible:ring-2 peer-focus-visible:ring-primary-500 peer-focus-visible:ring-offset-2
             peer-disabled:opacity-50 transition-all"></span>
     </span>
 

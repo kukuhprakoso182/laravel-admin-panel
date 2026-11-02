@@ -19,7 +19,7 @@
     </x-slot:cell_description>
 
     <x-slot:cell_users_count>
-        <x-atoms.badge color="blue"><span x-text="row.users_count"></span></x-atoms.badge>
+        <x-atoms.badge color="primary"><span x-text="row.users_count"></span></x-atoms.badge>
     </x-slot:cell_users_count>
 
     <x-slot:cell_created_at>
@@ -30,7 +30,7 @@
         <x-atoms.button
             type="button"
             variant="ghost"
-            color="teal"
+            color="primary"
             @click="openPermissionMatrix(row)"
             title="Kelola Permission"
             class="p-2! my-0!"

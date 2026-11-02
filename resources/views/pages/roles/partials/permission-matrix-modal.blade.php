@@ -8,7 +8,7 @@
 
         <template x-if="loadingMatrix">
             <div class="flex items-center justify-center py-16 text-gray-400">
-                <span class="animate-spin inline-block size-5 border-2 border-blue-500 border-t-transparent rounded-full"></span>
+                <span class="animate-spin inline-block size-5 border-2 border-primary-500 border-t-transparent rounded-full"></span>
             </div>
         </template>
 
@@ -56,7 +56,7 @@
         <x-atoms.button color="gray" variant="outline" type="button" @click="showPermissionModal = false">
             Batal
         </x-atoms.button>
-        <x-atoms.button color="teal" type="button" @click="savePermissionMatrix()" x-bind:disabled="savingMatrix">
+        <x-atoms.button color="primary" type="button" @click="savePermissionMatrix()" x-bind:disabled="savingMatrix">
             <span x-text="savingMatrix ? 'Menyimpan...' : 'Simpan'"></span>
         </x-atoms.button>
     </x-slot:footer>

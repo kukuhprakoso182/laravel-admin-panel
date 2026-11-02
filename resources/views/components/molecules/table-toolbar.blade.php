@@ -26,7 +26,7 @@
                 x-on:input.debounce.400ms="{{ $onSearchExpr }}"
                 placeholder="{{ $searchPlaceholder }}"
                 class="w-full ps-10 pe-9 py-2.5 rounded-lg border border-gray-200 text-sm
-                       placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                       placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
             >
             <button
                 type="button"

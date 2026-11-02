@@ -30,12 +30,12 @@
         <div class="opacity-0 group-hover:opacity-100 transition flex items-center gap-x-1 shrink-0">
             <button type="button" @click="openCreate(); form.parent_id = node.id"
                 title="Tambah sub-menu"
-                class="size-7 flex items-center justify-center rounded-md text-gray-400 hover:text-teal-600 hover:bg-teal-50">
+                class="size-7 flex items-center justify-center rounded-md text-gray-400 hover:text-success-600 hover:bg-success-50">
                 <i class="ri-add-line"></i>
             </button>
             <button type="button" @click="openEdit(node)"
                 title="Edit"
-                class="size-7 flex items-center justify-center rounded-md text-gray-400 hover:text-blue-600 hover:bg-blue-50">
+                class="size-7 flex items-center justify-center rounded-md text-gray-400 hover:text-primary-600 hover:bg-primary-50">
                 <i class="ri-pencil-line"></i>
             </button>
             <button type="button" @click="deleteMenu(node)"

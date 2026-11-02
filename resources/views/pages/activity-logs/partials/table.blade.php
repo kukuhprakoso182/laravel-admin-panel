@@ -45,7 +45,7 @@
 
     <x-slot:actions>
         <button type="button" @click="openDetail(row)"
-                class="p-2 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-blue-600 cursor-pointer" title="Lihat Detail">
+                class="p-2 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-primary-600 cursor-pointer" title="Lihat Detail">
             <i class="ri-eye-line ri-lg"></i>
         </button>
     </x-slot:actions>

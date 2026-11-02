@@ -11,14 +11,14 @@
         <x-atoms.input type="password" name="password" label="Password" />
 
         <div class="text-right -mt-1">
-            <a href="{{ route('password.request') }}" class="text-sm text-teal-600 hover:underline">
+            <a href="{{ route('password.request') }}" class="text-sm text-primary-600 hover:underline">
                 Lupa password?
             </a>
         </div>
 
         <x-atoms.button
             type="submit"
-            color="teal"
+            color="primary"
             loading-when="submitting"
         >
             Login

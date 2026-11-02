@@ -8,6 +8,35 @@
 @theme {
     --font-sans: "Quicksand", sans-serif, 'Instrument Sans', ui-sans-serif, system-ui, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /*
+     * ---------------------------------------------------------------
+     * THEME COLOR (satu-satunya tempat untuk mengganti warna brand)
+     * ---------------------------------------------------------------
+     * Pakai utility semantic: bg-primary-600, text-primary-700,
+     * ring-primary-500, border-primary-500, hover:bg-primary-50, dst.
+     * Untuk ganti warna brand, ubah nama palet di bawah
+     * (mis. blue -> teal / indigo / emerald). Cukup di blok ini.
+     */
+    --color-primary-50:  var(--color-blue-50);
+    --color-primary-100: var(--color-blue-100);
+    --color-primary-200: var(--color-blue-200);
+    --color-primary-300: var(--color-blue-300);
+    --color-primary-400: var(--color-blue-400);
+    --color-primary-500: var(--color-blue-500);
+    --color-primary-600: var(--color-blue-600);
+    --color-primary-700: var(--color-blue-700);
+    --color-primary-800: var(--color-blue-800);
+    --color-primary-900: var(--color-blue-900);
+
+    /* Warna status "sukses" (alert/dialog sukses), terpisah dari brand */
+    --color-success-50:  var(--color-teal-50);
+    --color-success-100: var(--color-teal-100);
+    --color-success-200: var(--color-teal-200);
+    --color-success-500: var(--color-teal-500);
+    --color-success-600: var(--color-teal-600);
+    --color-success-700: var(--color-teal-700);
+    --color-success-800: var(--color-teal-800);
 }
 
 [x-cloak] {

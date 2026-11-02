@@ -8,8 +8,8 @@
     <div class="min-h-screen flex flex-col items-center justify-center px-4 py-12">
 
         <a href="{{ url('/') }}" class="flex flex-col gap-2 items-center my-3 p-2">
-            <x-atoms.icon src="{{ asset('logo.png') }}" color="teal" shape="md" size="xl" fit="contain" />
-            <x-atoms.span color="teal" weight="bold" size="xl">{{ $appName }}</x-atoms.span>
+            <x-atoms.icon src="{{ asset('logo.png') }}" color="primary" shape="md" size="xl" fit="contain" />
+            <x-atoms.span color="primary" weight="bold" size="xl">{{ $appName }}</x-atoms.span>
         </a>
         <div class="">
         </div>
