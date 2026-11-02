@@ -16,18 +16,18 @@
      * Pakai utility semantic: bg-primary-600, text-primary-700,
      * ring-primary-500, border-primary-500, hover:bg-primary-50, dst.
      * Untuk ganti warna brand, ubah nama palet di bawah
-     * (mis. blue -> teal / indigo / emerald). Cukup di blok ini.
+     * (mis. teal -> blue / indigo / emerald). Cukup di blok ini.
      */
-    --color-primary-50:  var(--color-blue-50);
-    --color-primary-100: var(--color-blue-100);
-    --color-primary-200: var(--color-blue-200);
-    --color-primary-300: var(--color-blue-300);
-    --color-primary-400: var(--color-blue-400);
-    --color-primary-500: var(--color-blue-500);
-    --color-primary-600: var(--color-blue-600);
-    --color-primary-700: var(--color-blue-700);
-    --color-primary-800: var(--color-blue-800);
-    --color-primary-900: var(--color-blue-900);
+    --color-primary-50:  var(--color-teal-50);
+    --color-primary-100: var(--color-teal-100);
+    --color-primary-200: var(--color-teal-200);
+    --color-primary-300: var(--color-teal-300);
+    --color-primary-400: var(--color-teal-400);
+    --color-primary-500: var(--color-teal-500);
+    --color-primary-600: var(--color-teal-600);
+    --color-primary-700: var(--color-teal-700);
+    --color-primary-800: var(--color-teal-800);
+    --color-primary-900: var(--color-teal-900);
 
     /* Warna status "sukses" (alert/dialog sukses), terpisah dari brand */
     --color-success-50:  var(--color-teal-50);
